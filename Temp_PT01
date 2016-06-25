@@ -1,0 +1,31 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace MQ
+{
+    public partial class ProgressTracker : Form
+    {
+        public String progressText;
+
+        public ProgressTracker()
+        {
+            InitializeComponent();
+            this.TopMost = true;
+        }
+
+        public void changeProgress()
+        {
+            this.labelProgress.Text = progressText;
+        }
+
+        private void ProgressTracker_Load(object sender, EventArgs e)
+        {
+        }
+    }
+}
