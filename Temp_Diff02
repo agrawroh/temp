@@ -1,0 +1,84 @@
+package com.barcap.onereg.util;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.drools.core.util.StringUtils;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+
+/**
+ * Custom SAX Parser
+ * @author agrawroh
+ * @version 2016-04-13 v1.0
+ */
+
+public class CustomSAXParser extends DefaultHandler {
+
+    /************************************ Global Declarations ************************************/
+    private String xPath = new String();
+    private XMLReader xmlReader;
+    private CustomSAXParser parentNode;
+    private StringBuilder characters = new StringBuilder();
+    private Map<String, Integer> elementNameCount = new HashMap<>();
+    private Map<String, String> resultMap;
+
+    public CustomSAXParser(XMLReader xmlReader, Map<String, String> resultMap) {
+        this.xmlReader = xmlReader;
+        this.resultMap = resultMap;
+    }
+
+    private CustomSAXParser(String xPath, XMLReader xmlReader, Map<String, String> resultMap,
+            CustomSAXParser parentNode) {
+        this(xmlReader, resultMap);
+        this.xPath = xPath;
+        this.parentNode = parentNode;
+    }
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes atts)
+            throws SAXException {
+        /* Get Count */
+        Integer count = elementNameCount.get(qName);
+        count = null == count ? 1 : count + 1;
+
+        /* Put Element Name Count */
+        elementNameCount.put(qName, count);
+
+        /* Get Child XPath */
+        String childXPath = xPath + "/" + qName + "[" + count + "]";
+
+        /* Iterate Attributes */
+        for (int x = 0; x < atts.getLength(); x++) {
+            /* Put Entry In Result Map */
+            resultMap.put(childXPath + "/@" + atts.getQName(x), atts.getValue(x));
+        }
+
+        /* Get & Set Child Node */
+        CustomSAXParser childNode = new CustomSAXParser(childXPath, xmlReader, resultMap, this);
+        xmlReader.setContentHandler(childNode);
+    }
+
+    @Override
+    public void endElement(String uri, String localName, String qName) throws SAXException {
+        /* Get Value String */
+        String value = characters.toString().trim();
+
+        /* Check Value */
+        if (!StringUtils.isEmpty(value)) {
+            /* Put Entry In Result Map */
+            resultMap.put(xPath + "/text()", characters.toString());
+        }
+
+        /* Set Parent Node */
+        xmlReader.setContentHandler(parentNode);
+    }
+
+    @Override
+    public void characters(char[] ch, int start, int length) throws SAXException {
+        /* Append Characters */
+        characters.append(ch, start, length);
+    }
+}
