@@ -1,0 +1,437 @@
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.apache.commons.lang.StringUtils;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+
+/**
+ * XML Differentiators Tool Class
+ * @author agrawroh
+ * @version 2016-04-13 v1.0
+ */
+
+public class XMLDiffTool {
+
+    /************************************ Global Declarations ************************************/
+    private static final SAXParserFactory SAX_PARSER_FACTORY = SAXParserFactory.newInstance();
+    private static final String CNST_SEQ_MISMATCH_1 = "Node Sequence Mismatch @ XPath Location: ";
+    private static final String CNST_SEQ_MISMATCH_2 = "Nearest Match Found @ XPath Location: ";
+    private static final String CNST_VAL_MISMATCH = "Value Mismatch @ XPath Location: ";
+    private static final String CNST_NUM_MISMATCH = "Node Number Mismatch Found!";
+    private static final String CNST_MSG_MISSING = " Missing @ XPath Location: ";
+    private static final String CNST_QLFR_GLBL_PATTERN = "\\[[0-9]+\\]";
+    private static final String CNST_VAL_EXPECTED = "Expected Value: ";
+    private static final String CNST_VAL_ACTUAL = "Actual Value: ";
+    private static final String CNST_ATTRB = "Attribute";
+    private static final String CSNT_QLFR_GLBL = "[*]";
+    private static final String CNST_NEW_LINE = "\n";
+    private static final String CNST_DELIM = " | ";
+    private static final String CNST_NODE = "Node";
+    private static final String CNST_SYMB = "@";
+    private boolean ignoreWhitespaces = false;
+    private boolean ignoreOrder = false;
+    private SAXParser saxParser;
+
+    /**
+     * Constructor Class
+     * @throws ParserConfigurationException
+     * @throws SAXException
+     */
+    public XMLDiffTool() throws ParserConfigurationException, SAXException {
+        /* Set Attributes */
+        SAX_PARSER_FACTORY.setNamespaceAware(true);
+        SAX_PARSER_FACTORY.setValidating(false);
+
+        /* Create SAX Parser */
+        saxParser = SAX_PARSER_FACTORY.newSAXParser();
+    }
+
+    /**
+     * Compare Method
+     * @param expectedFileContents
+     * @param actualFileContents
+     * @param ignoreSet
+     * @return results
+     * @throws IOException
+     * @throws SAXException
+     */
+    public String compare(String expectedFileContents, String actualFileContents,
+            Set<String> ignoreSet) throws IOException, SAXException {
+        /* Get Expected XPath Strings */
+        Map<String, String> expectedMap = getXPathFromXML(saxParser.getXMLReader(),
+                expectedFileContents);
+        Set<String> expectedSet = new HashSet<>(expectedMap.keySet());
+        expectedSet.removeAll(ignoreSet);
+
+        /* Get Actual XPath Strings */
+        Map<String, String> actualMap = getXPathFromXML(saxParser.getXMLReader(),
+                actualFileContents);
+        Set<String> actualSet = new HashSet<>(actualMap.keySet());
+        actualSet.removeAll(ignoreSet);
+
+        /* Create Result Builder */
+        StringBuilder results = new StringBuilder();
+
+        /* Get Number Differences */
+        results.append(getNumberMismatches(expectedSet, actualSet));
+
+        /* Get Value Differences */
+        results.append(getDifferences(expectedSet, actualSet, expectedMap, actualMap));
+
+        /* Return Results */
+        return results.toString();
+    }
+
+    /**
+     * Get Number Mismatches
+     * @param expectedSet
+     * @param actualSet
+     * @return result
+     */
+    private String getNumberMismatches(Set<String> expectedSet, Set<String> actualSet) {
+        /* Create Result Builder */
+        StringBuilder result = new StringBuilder();
+
+        /* Check Number Differences */
+        if (expectedSet.size() != actualSet.size()) {
+            /* Append Number Differences */
+            result.append(CNST_NUM_MISMATCH).append(CNST_NEW_LINE).append(CNST_VAL_EXPECTED)
+                    .append(expectedSet.size()).append(CNST_DELIM).append(CNST_VAL_ACTUAL)
+                    .append(actualSet.size()).append(CNST_NEW_LINE).append(CNST_NEW_LINE);
+        }
+
+        /* Return Results */
+        return result.toString();
+    }
+
+    /**
+     * Compare Method
+     * @param expectedFileContents
+     * @param actualFileContents
+     * @param ignoreMap
+     * @return results
+     * @throws IOException
+     * @throws SAXException
+     */
+    public String compare(String expectedFileContents, String actualFileContents,
+            Map<String, String> ignoreMap) throws IOException, SAXException {
+        /* Call Compare */
+        return compare(expectedFileContents, actualFileContents, ignoreMap.keySet());
+    }
+
+    /**
+     * Compare Method
+     * @param expectedFileContents
+     * @param actualFileContents
+     * @return results
+     * @throws IOException
+     * @throws SAXException
+     */
+    public String compare(String expectedFileContents, String actualFileContents)
+            throws IOException, SAXException {
+        /* Call Compare */
+        return compare(expectedFileContents, actualFileContents, new HashSet<String>());
+    }
+
+    /**
+     * Get XPath From XML File
+     * @param xmlReader
+     * @param fileContents
+     * @return resultMap
+     * @throws IOException
+     * @throws SAXException
+     */
+    private Map<String, String> getXPathFromXML(XMLReader xmlReader, String fileContents)
+            throws IOException, SAXException {
+        /* Initialize New Result Set */
+        Map<String, String> resultMap = new HashMap<>();
+
+        /* Set ContentHandler On XMLReader */
+        xmlReader.setContentHandler(new CustomSAXParser(xmlReader, resultMap));
+
+        /* Start XML Parsing */
+        xmlReader.parse(new InputSource(new StringReader(fileContents)));
+
+        /* return Result Set */
+        return resultMap;
+    }
+
+    /**
+     * Get Value Differences
+     * @param expectedSet
+     * @param expectedMap
+     * @param actualMap
+     * @return differences
+     */
+    private String getDifferences(Set<String> expectedSet, Set<String> actualSet,
+            Map<String, String> expectedMap, Map<String, String> actualMap) {
+        /* Create Result Builder */
+        StringBuilder result = new StringBuilder();
+
+        /* Initialize New Union HashSet */
+        Set<String> unionSet = new HashSet<>();
+        unionSet.addAll(expectedSet);
+        unionSet.addAll(actualSet);
+
+        /* Get Mismatches */
+        for (final String qualifier : getQualifiers(unionSet)) {
+            result.append(getValueAndNodeMismatches(qualifier, expectedSet, actualSet, expectedMap,
+                    actualMap));
+        }
+
+        /* Return Differences */
+        return result.toString();
+    }
+
+    /**
+     * Get Global Qualifiers
+     * @param unionSet
+     * @return qualifiers
+     */
+    private Set<String> getQualifiers(Set<String> unionSet) {
+        /* Initialize Empty Qualifiers Set */
+        Set<String> qualifiers = new HashSet<>();
+
+        /* Iterate Union Set */
+        for (final String diff : unionSet) {
+            /* Add Global Qualifier */
+            qualifiers.add(diff.replaceAll(CNST_QLFR_GLBL_PATTERN, CSNT_QLFR_GLBL));
+        }
+
+        /* Return Qualifiers Set */
+        return qualifiers;
+    }
+
+    /**
+     * Get Similarities
+     * @param unionSet
+     * @param qualifier
+     * @param expectedMap
+     * @param actualMap
+     * @return similarSet
+     */
+    private String getValueAndNodeMismatches(String qualifier, Set<String> expectedSet,
+            Set<String> actualSet, Map<String, String> expectedMap, Map<String, String> actualMap) {
+        /* Get Qualifying Subset Lists */
+        List<String> qualifyingExpectedSubsetList = getQualfyingSubsetList(qualifier, expectedSet);
+        List<String> qualifyingActualSubsetList = getQualfyingSubsetList(qualifier, actualSet);
+
+        /* Check List For Mismatches & Return Result */
+        return getDifferences(expectedSet, qualifyingExpectedSubsetList, actualSet,
+                qualifyingActualSubsetList, expectedMap, actualMap);
+    }
+
+    /**
+     * Get Qualifying Subset List
+     * @param qualifier
+     * @param set
+     * @return list
+     */
+    private List<String> getQualfyingSubsetList(String qualifier, Set<String> set) {
+        /* Create Empty SubSet List */
+        List<String> qualifyingSubsetList = new ArrayList<>();
+
+        /* Iterate UnionSet */
+        for (final String diff : set) {
+            /* Check If Match Qualifies */
+            if (qualifier.equals((diff.replaceAll(CNST_QLFR_GLBL_PATTERN, CSNT_QLFR_GLBL)))) {
+                /* Add Qualified Match */
+                qualifyingSubsetList.add(diff);
+            }
+        }
+
+        /* Return List */
+        return qualifyingSubsetList;
+    }
+
+    /**
+     * Check List For Similarities
+     * @param expectedSet
+     * @param qualifyingExpectedSubsetList
+     * @param expectedMap
+     * @param actualMap
+     * @return similarSet
+     */
+    private String getDifferences(Set<String> expectedSet,
+            List<String> qualifyingExpectedSubsetList, Set<String> actualSet,
+            List<String> qualifyingActualSubsetList, Map<String, String> expectedMap,
+            Map<String, String> actualMap) {
+        /* Create Result Builder */
+        StringBuilder result = new StringBuilder();
+
+        /* Declare Counter Variable */
+        int counter = 0;
+
+        /* Initialize Empty Similarities Set */
+        List<String> expectedSimilarities = new ArrayList<>();
+        List<String> actualSimilarities = new ArrayList<>();
+
+        /* Create Query Containers */
+        String expectedKey = null;
+        String actualKey = null;
+
+        /* Bubble Value Comparator */
+        for (int i = 0; i < qualifyingExpectedSubsetList.size(); i++) {
+            /* Get Expected Value */
+            expectedKey = qualifyingExpectedSubsetList.get(i);
+            for (int j = 0; j < qualifyingActualSubsetList.size(); j++) {
+                /* Get Actual Value */
+                actualKey = qualifyingActualSubsetList.get(j);
+                /* Check Containing Maps & Values */
+                if (checkMapValues(expectedMap, actualMap, expectedKey, actualKey)) {
+                    /* Check Whether Both Maps Contain These Keys */
+                    if (expectedSet.contains(expectedKey) && actualSet.contains(actualKey)) {
+                        /* Remove Values (Similarities) */
+                        expectedSet.remove(expectedKey);
+                        actualSet.remove(actualKey);
+
+                        /* Add Values (Similarities) */
+                        expectedSimilarities.add(expectedKey);
+                        actualSimilarities.add(actualKey);
+                    }
+                }
+            }
+        }
+
+        /* Remove Similarities */
+        qualifyingExpectedSubsetList.removeAll(expectedSimilarities);
+        qualifyingActualSubsetList.removeAll(actualSimilarities);
+
+        /* Evaluate Value Mismatches */
+        while (qualifyingExpectedSubsetList.size() > counter
+                && qualifyingActualSubsetList.size() > counter) {
+            result.append(CNST_VAL_MISMATCH).append(qualifyingExpectedSubsetList.get(counter));
+            result.append(CNST_NEW_LINE).append(CNST_VAL_EXPECTED)
+                    .append(expectedMap.get(qualifyingExpectedSubsetList.get(counter)))
+                    .append(CNST_DELIM).append(CNST_VAL_ACTUAL)
+                    .append(actualMap.get(qualifyingActualSubsetList.get(counter++)))
+                    .append(CNST_NEW_LINE).append(CNST_NEW_LINE);
+        }
+
+        /* Evaluate Missing Nodes & Attribute Entries */
+        while (qualifyingExpectedSubsetList.size() > counter) {
+            result.append(
+                    qualifyingExpectedSubsetList.get(counter).contains(CNST_SYMB) ? CNST_ATTRB
+                            : CNST_NODE).append(CNST_MSG_MISSING)
+                    .append(qualifyingExpectedSubsetList.get(counter)).append(CNST_NEW_LINE)
+                    .append(CNST_VAL_EXPECTED)
+                    .append(expectedMap.get(qualifyingExpectedSubsetList.get(counter++)))
+                    .append(CNST_NEW_LINE).append(CNST_NEW_LINE);
+        }
+
+        /* Evaluate Missing Nodes & Attribute Entries */
+        while (qualifyingActualSubsetList.size() > counter) {
+            result.append(
+                    qualifyingActualSubsetList.get(counter).contains(CNST_SYMB) ? CNST_ATTRB
+                            : CNST_NODE).append(CNST_MSG_MISSING)
+                    .append(qualifyingActualSubsetList.get(counter)).append(CNST_NEW_LINE)
+                    .append(CNST_VAL_ACTUAL)
+                    .append(actualMap.get(qualifyingActualSubsetList.get(counter++)))
+                    .append(CNST_NEW_LINE).append(CNST_NEW_LINE);
+        }
+
+        /* Get Sequencing Differences & Return Found Mismatches */
+        return ignoreOrder ? result.toString() : result.toString()
+                + getSequenceDifferences(expectedSimilarities, actualSimilarities);
+    }
+
+    /**
+     * Check Map Values
+     * @param expectedMap
+     * @param actualMap
+     * @param searchQuery1
+     * @param searchQuery2
+     * @return boolean
+     */
+    private boolean checkMapValues(Map<String, String> expectedMap, Map<String, String> actualMap,
+            String searchQuery1, String searchQuery2) {
+        /* Get First Value */
+        String firstValue = expectedMap.get(searchQuery1);
+
+        /* Get Second Value */
+        String secondValue = expectedMap.get(searchQuery2);
+
+        /* Check For Null */
+        if (null != firstValue) {
+            /* Get Second Value */
+            secondValue = actualMap.get(searchQuery2);
+        } else {
+            /* Get First Value */
+            firstValue = actualMap.get(searchQuery1);
+        }
+
+        /* Check Ignore White Spaces */
+        firstValue = null != firstValue && ignoreWhitespaces ? firstValue.trim() : firstValue;
+        secondValue = null != secondValue && ignoreWhitespaces ? secondValue.trim() : secondValue;
+
+        /* Return Comparison Result */
+        return StringUtils.equalsIgnoreCase(firstValue, secondValue);
+    }
+
+    /**
+     * Get Sequence Differences
+     * @param intersectionSet
+     * @return result
+     */
+    private String getSequenceDifferences(List<String> expectedSimilarities,
+            List<String> actualSimilarities) {
+        /* Create Result Builder */
+        StringBuilder result = new StringBuilder();
+
+        /* Declare Counter Variable */
+        int counter = 0;
+
+        /* Iterate Intersection Set */
+        while (expectedSimilarities.size() > counter && actualSimilarities.size() > counter) {
+            /* Append Result */
+            if (!StringUtils.equalsIgnoreCase(expectedSimilarities.get(counter),
+                    actualSimilarities.get(counter))) {
+                result.append(CNST_SEQ_MISMATCH_1).append(expectedSimilarities.get(counter))
+                        .append(CNST_NEW_LINE).append(CNST_SEQ_MISMATCH_2)
+                        .append(actualSimilarities.get(counter)).append(CNST_NEW_LINE)
+                        .append(CNST_NEW_LINE);
+            }
+            /* Increment Counter */
+            ++counter;
+        }
+
+        /* Return Result String */
+        return result.toString();
+    }
+
+    /**
+     * @param ignoreOrder the ignoreOrder to set
+     */
+    public XMLDiffTool setIgnoreOrder(boolean ignoreOrder) {
+        this.ignoreOrder = ignoreOrder;
+        return this;
+    }
+
+    /**
+     * @param saxParser the saxParser to set
+     */
+    public XMLDiffTool setSaxParser(SAXParser saxParser) {
+        this.saxParser = saxParser;
+        return this;
+    }
+
+    /**
+     * @param ignoreWhitespaces the ignoreWhitespaces to set
+     */
+    public XMLDiffTool setIgnoreWhitespaces(boolean ignoreWhitespaces) {
+        this.ignoreWhitespaces = ignoreWhitespaces;
+        return this;
+    }
+}
