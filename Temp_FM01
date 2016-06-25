@@ -1,0 +1,2225 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using IBM.WMQ;
+using SolaceSystems.Solclient.Messaging;
+using System.Collections;
+using System.IO;
+using System.Threading;
+
+namespace MQ
+{
+    public partial class Form1 : Form
+    {
+        bool flag = false;
+        bool refreshFlag = true;
+        public bool searchAllFiles = false;
+        IContext context = null;
+        ISession session = null;
+        Int32 selectionEnd = 0;
+        Int32 selectionStart = 0;
+        ProgressTracker progressForm = null;
+        MQQueueManager queueManager = null;
+        ContextFactoryProperties cfp = new ContextFactoryProperties();
+        Dictionary<Int32, MQDetails> mqDetails;
+        Dictionary<String, String> displayMsgDict = new Dictionary<String, String>();
+        Dictionary<Int32, String> messageDict = new Dictionary<Int32, String>();
+        Dictionary<Int32, Object> associationDict = new Dictionary<Int32, Object>();
+
+        public class MQDetails
+        {
+            public string ID { get; set; }
+            public string DisplayName { get; set; }
+            public string Hostaname { get; set; }
+            public string Port { get; set; }
+            public string ChannelName { get; set; }
+            public string QueueManager { get; set; }
+            public string isSSL { get; set; }
+            public string KeyStoreLocation { get; set; }
+            public string CipherSpec { get; set; }
+            public string isAuthRequired { get; set; }
+            public string Username { get; set; }
+            public string Password { get; set; }
+        }
+
+        public Form1()
+        {
+            InitializeComponent();
+
+            float widthRatio = Screen.PrimaryScreen.Bounds.Width / 1285f;
+            float heightRatio = Screen.PrimaryScreen.Bounds.Height / 1036f;
+            SizeF scale = new SizeF(widthRatio, heightRatio);
+            this.Scale(scale);
+
+            foreach (Control control in this.Controls)
+            {
+                control.Font = new Font(control.Font.Name, control.Font.SizeInPoints * heightRatio * widthRatio);
+            }
+
+            ToolTip newFileToolTip = new ToolTip();
+            newFileToolTip.ToolTipTitle = "Add New File";
+            newFileToolTip.SetToolTip(btnAddFile, "Adds a new blank file on Display Panel.");
+
+            ToolTip remFileToolTip = new ToolTip();
+            remFileToolTip.ToolTipTitle = "Delete Selected File";
+            remFileToolTip.SetToolTip(btnDelFile, "Deletes the selected file from the Display Panel.");
+
+            ToolTip savFileToolTip = new ToolTip();
+            savFileToolTip.ToolTipTitle = "Save Selected File";
+            savFileToolTip.SetToolTip(btnSaveFile, "Saves the selected file on Display Panel to Local Machine.");
+
+            ToolTip cmdCutToolTip = new ToolTip();
+            cmdCutToolTip.ToolTipTitle = "Cut Text";
+            cmdCutToolTip.SetToolTip(btnCut, "Cuts the selected text from the file on Display Panel.");
+
+            ToolTip cmdCpyToolTip = new ToolTip();
+            cmdCpyToolTip.ToolTipTitle = "Copy Text";
+            cmdCpyToolTip.SetToolTip(btnCopy, "Copies the selected text from the file on Display Panel.");
+
+            ToolTip cmdPstToolTip = new ToolTip();
+            cmdPstToolTip.ToolTipTitle = "Paste Text";
+            cmdPstToolTip.SetToolTip(btnPaste, "Paste the copied text to the file on Display Panel.");
+
+            ToolTip srhFileToolTip = new ToolTip();
+            srhFileToolTip.ToolTipTitle = "Search/Replace File";
+            srhFileToolTip.SetToolTip(btnSearch, "Search/Replace the file on Display Panel for the passed search string.");
+
+            ToolTip salFileToolTip = new ToolTip();
+            salFileToolTip.ToolTipTitle = "Search/Replace All Files";
+            salFileToolTip.SetToolTip(btnSearchAll, "Search/Replace all the files on Display Panel for the passed search string.");
+
+            ToolTip dalFileToolTip = new ToolTip();
+            dalFileToolTip.ToolTipTitle = "Delete All Files";
+            dalFileToolTip.SetToolTip(btnDelFile, "Delete all the exisiting files on Display Panel.");
+
+            ToolTip svlFileToolTip = new ToolTip();
+            svlFileToolTip.ToolTipTitle = "Save All Files";
+            svlFileToolTip.SetToolTip(btnSaveAll, "Save all the exisiting files on Display Panel to the Local Machine.");
+
+            ToolTip clrFileToolTip = new ToolTip();
+            clrFileToolTip.ToolTipTitle = "Clear File";
+            clrFileToolTip.SetToolTip(btnClear, "Clear the contents of selected file on Display Panel.");
+
+            ToolTip encFileToolTip = new ToolTip();
+            encFileToolTip.ToolTipTitle = "Set Encoding";
+            encFileToolTip.SetToolTip(btnEncoding, "Set the Encoding of the exisiting file on Display Panel.");
+
+            this.cfp.SolClientLogLevel = SolLogLevel.Warning;
+            this.cfp.LogToConsoleError();
+            ContextFactory.Instance.Init(cfp);
+            this.connProp.SelectedIndex = 0;
+            this.cipherSpec.SelectedIndex = 0;
+            this.AllowDrop = true;
+            this.DragEnter += new DragEventHandler(Event_DragEnter);
+            this.DragDrop += new DragEventHandler(Event_DragDrop);
+            this.displayMsg.AllowDrop = true;
+            this.displayMsg.DragEnter += new DragEventHandler(Event_DragEnter);
+            this.displayMsg.DragDrop += new DragEventHandler(Event_DragDrop);
+            this.mqDetails = this.parseCSV();
+            this.flag = true;
+        }
+
+        void Event_DragEnter(Object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+        }
+
+        void Event_DragDrop(Object sender, DragEventArgs e)
+        {
+            String[] files = (String[])e.Data.GetData(DataFormats.FileDrop);
+            addFilesToDisplay(files);
+        }
+
+        private void addFilesToDisplay(String[] files)
+        {
+            showProgress();
+            this.loadMessagesBGWorker.RunWorkerAsync(files);
+        }
+
+        private void getMessageContent()
+        {
+            int openOptions = MQC.MQOO_FAIL_IF_QUIESCING | MQC.MQOO_INPUT_SHARED | MQC.MQOO_BROWSE;
+            MQQueue newQueue = queueManager.AccessQueue(queueList.SelectedItem.ToString(), openOptions);
+
+            MQMessage theMessage = new MQMessage();
+            MQGetMessageOptions gmo = new MQGetMessageOptions();
+            gmo.Options = MQC.MQGMO_WAIT | MQC.MQGMO_BROWSE_FIRST;
+            gmo.MatchOptions = MQC.MQMO_MATCH_MSG_ID;
+            gmo.WaitInterval = 100;
+            try
+            {
+                newQueue.Get(theMessage, gmo);
+                String msgText = theMessage.ReadString(theMessage.MessageLength);
+                MessageBox.Show(msgText);
+            }
+            catch (MQException ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            newQueue.Close();
+        }
+
+        private void getIBMMessage(int msgCount)
+        {
+            showProgress();
+            this.getQueueMessagesBGWorker.RunWorkerAsync(new Tuple<int, Boolean>(msgCount, true));
+        }
+
+        private void deleteIBMMessages()
+        {
+            int openOptions = MQC.MQOO_FAIL_IF_QUIESCING | MQC.MQOO_INPUT_SHARED | MQC.MQOO_BROWSE;
+            try
+            {
+                MQQueue newQueue = queueManager.AccessQueue(selectQueueDM.Text.Trim(), openOptions);
+
+                MQMessage theMessage = new MQMessage();
+                MQGetMessageOptions gmo = new MQGetMessageOptions();
+                gmo.Options = MQC.MQGMO_WAIT | MQC.MQGMO_BROWSE_FIRST;
+                gmo.MatchOptions = MQC.MQMO_NONE;
+                gmo.WaitInterval = 100;
+
+                while (true)
+                {
+                    try
+                    {
+                        newQueue.Get(theMessage, gmo);
+                        gmo.Options = MQC.MQGMO_WAIT | MQC.MQGMO_MSG_UNDER_CURSOR;
+                        newQueue.Get(theMessage, gmo);
+                        gmo.Options = MQC.MQGMO_WAIT | MQC.MQGMO_BROWSE_NEXT;
+                    }
+                    catch (MQException ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                        break;
+                    }
+                }
+                newQueue.Close();
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Successfully Cleared The Message(s) On Queue: " + selectQueueDM.Text.Trim().ToString();
+                scrollCaret();
+            }
+            catch (Exception ex)
+            {
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Error Occured While Clearing The Message(s) On Queue: " + selectQueueDM.Text.Trim().ToString();
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                scrollCaret();
+            }
+        }
+
+        private void deleteSOLMessages()
+        {
+            try
+            {
+                IQueue queue = ContextFactory.Instance.CreateQueue(selectQueueDM.Text.Trim());
+                BrowserProperties browserProps = new BrowserProperties();
+                IBrowser browser = session.CreateBrowser(queue, browserProps);
+                IMessage message = ContextFactory.Instance.CreateMessage();
+                while ((message = browser.GetNext()) != null)
+                {
+                    try
+                    {
+                        browser.Remove(message);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                        break;
+                    }
+
+                }
+                browser.Dispose();
+
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Successfully Cleared The Message(s) On Queue: " + selectQueueDM.Text.Trim().ToString();
+                scrollCaret();
+            }
+            catch (Exception ex)
+            {
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Error Occured While Clearing The Message(s) On Queue: " + selectQueueDM.Text.Trim().ToString();
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                scrollCaret();
+            }
+        }
+
+        private void deleteSelectedIBMMessages()
+        {
+            int openOptions = MQC.MQOO_FAIL_IF_QUIESCING | MQC.MQOO_INPUT_SHARED | MQC.MQOO_BROWSE;
+            try
+            {
+                MQQueue newQueue = queueManager.AccessQueue(selectQueueDM.Text.Trim(), openOptions);
+
+                MQMessage theMessage = new MQMessage();
+                MQGetMessageOptions gmo = new MQGetMessageOptions();
+                gmo.Options = MQC.MQGMO_WAIT | MQC.MQGMO_BROWSE_FIRST;
+                gmo.MatchOptions = MQC.MQMO_MATCH_MSG_ID;
+                gmo.WaitInterval = 100;
+
+                foreach (Int32 index in messageList.CheckedIndices)
+                {
+                    try
+                    {
+                        theMessage.MessageId = (byte[])associationDict[index];
+                        newQueue.Get(theMessage, gmo);
+                        gmo.Options = MQC.MQGMO_WAIT | MQC.MQGMO_MSG_UNDER_CURSOR;
+                        newQueue.Get(theMessage, gmo);
+                        gmo.Options = MQC.MQGMO_WAIT | MQC.MQGMO_BROWSE_NEXT;
+                    }
+                    catch (MQException ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                        break;
+                    }
+                }
+                newQueue.Close();
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Successfully Cleared The Selected Message(s) On Queue: " + selectQueueDM.Text.Trim().ToString();
+                scrollCaret();
+            }
+            catch (Exception ex)
+            {
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Error Occured While Clearing The Selected Message(s) On Queue: " + selectQueueDM.Text.Trim().ToString();
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                scrollCaret();
+            }
+        }
+
+        private void deleteSelectedSOLMessages()
+        {
+            try
+            {
+                IQueue queue = ContextFactory.Instance.CreateQueue(selectQueueDM.Text.Trim());
+                BrowserProperties browserProps = new BrowserProperties();
+                IBrowser browser = session.CreateBrowser(queue, browserProps);
+                IMessage message = ContextFactory.Instance.CreateMessage();
+
+                List<String> msgList = new List<String>();
+                foreach (Int32 index in messageList.CheckedIndices)
+                {
+                    msgList.Add(messageDict[index]);
+                }
+
+                while ((message = browser.GetNext()) != null)
+                {
+                    try
+                    {
+                        if (msgList.Contains(System.Text.Encoding.UTF8.GetString(message.BinaryAttachment)))
+                            browser.Remove(message);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                        break;
+                    }
+
+                }
+                browser.Dispose();
+
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Successfully Cleared The Selected Message(s) On Queue: " + selectQueueDM.Text.Trim().ToString();
+                scrollCaret();
+            }
+            catch (Exception ex)
+            {
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Error Occured While Clearing The Selected Message(s) On Queue: " + selectQueueDM.Text.Trim().ToString();
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                scrollCaret();
+            }
+        }
+
+        private void getQueueData(String queueName, Boolean isRefresh)
+        {
+            if (isRefresh)
+            {
+                if (typeText.Text.Contains("IBM"))
+                    getIBMQueueData(queueName);
+                else
+                    getSOLQueueData(queueName);
+            }
+        }
+
+        private void getSOLQueueData(String queueName)
+        {
+            showProgress();
+            this.getQueueDetailsBGWorker.RunWorkerAsync(new Tuple<String,Boolean>(queueName,false));
+        }
+
+        private void getIBMQueueData(String queueName)
+        {
+            showProgress();
+            this.getQueueDetailsBGWorker.RunWorkerAsync(new Tuple<String, Boolean>(queueName, true));
+        }
+
+        private void displayMessage()
+        {
+            try
+            {
+                displayMsg.Text = messageDict[messageList.SelectedIndex].ToString();
+                if (!displayMsgDict.ContainsKey(Convert.ToBase64String((byte[])associationDict[messageList.SelectedIndex])))
+                {
+                    displayMsgDict.Add(Convert.ToBase64String((byte[])associationDict[messageList.SelectedIndex]), messageDict[messageList.SelectedIndex]);
+                    setDispData(displayMsgDict.Count - 1);
+                }
+                setMsgCount();
+            }
+            catch (Exception ex)
+            {
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Error Occured While Displaying The Message(s) On Queue: " + selectQueueDM.Text.Trim().ToString();
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                scrollCaret();
+            }
+        }
+
+        private void MessageListKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (Convert.ToInt32(e.KeyChar) == 13)
+            {
+                displayMessage();
+            }
+            e.Handled = true;
+        }
+
+        private void QueueListKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (null != queueList.SelectedItem)
+            {
+                if (Convert.ToInt32(e.KeyChar) == 13)
+                {
+                    getQueueData(queueList.SelectedItem.ToString(), true);
+                }
+                else if (ModifierKeys.HasFlag(Keys.Control) && Convert.ToInt32(e.KeyChar) == 3)
+                {
+                    Clipboard.SetData(System.Windows.Forms.DataFormats.Text, queueList.SelectedItem.ToString());
+                }
+            }
+            e.Handled = true;
+        }
+
+        private void SelectMessasgeKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (Convert.ToInt32(e.KeyChar) == 13)
+            {
+                if (typeText.Text.Contains("IBM"))
+                    getIBMMessage(1);
+                else
+                    getSOLMessage(1);
+                e.Handled = true;
+            }
+        }
+
+        private void SelectQueueKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (Convert.ToInt32(e.KeyChar) == 13)
+            {
+                if (queueName.Text.ToUpper().CompareTo("MQMABOUT") == 0)
+                    MessageBox.Show("MQManager Utility v1.3\nAuthor: Rohit Agrawal\nEmail: rohit.agrawal@barclays.com", "MQManager Utility", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                else if (queueName.Text.ToUpper().CompareTo("MQMVERSION") == 0)
+                    MessageBox.Show("MQManager Utility v1.3\nIBM Client Version: 7.5.0.5\nSolace Version: 7.1.0.42", "MQManager Utility", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                else if (queueName.Text.ToUpper().Contains("REVLIST") || queueName.Text.ToUpper().Contains("REVSUMMARY"))
+                    MessageBox.Show("*** REVISION SUMMARY ***\n\nv1.3\n- Added Solace Queue Support.\n\nv1.2\n- Added Progress Trackers.\n- Added More Controls To Display Panel.\n- Modified Queue Configuration Details.\n- Fixed Queue Reader Count(s) Issue.\n- Fixed Display Message Item Count(s) Issue.\n\nv1.1\n- Added SSL Support.\n- Added Support For Configurable Connection Details.\n- Fixed IBM WMQ Write Encoding Issue.\n\nv1.1\n- Initial Release.", "MQManager Utility", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                else if (queueName.Text.ToUpper().Contains("QUEUE") && queueName.Text.ToUpper().Contains("REFRESH") && queueName.Text.ToUpper().Contains("ON"))
+                    refreshFlag = true;
+                else if (queueName.Text.ToUpper().Contains("QUEUE") && queueName.Text.ToUpper().Contains("REFRESH") && queueName.Text.ToUpper().Contains("OFF"))
+                    refreshFlag = false;
+                else if (queueName.Text.ToUpper().Contains("PRINT") && queueName.Text.ToUpper().Contains("RX") && typeText.Text.Contains("SOL"))
+                {
+                    if (session != null)
+                    {
+                        try
+                        {
+                            PrintRxStats(session.GetRxStats());
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Unable To Print RxStats.", "MQManager Utility", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Console.WriteLine(ex.ToString());
+                        }
+                    }
+                }
+                else if (queueName.Text.ToUpper().Contains("PRINT") && queueName.Text.ToUpper().Contains("TX") && typeText.Text.Contains("SOL"))
+                {
+                    if (session != null)
+                    {
+                        try
+                        {
+                            PrintTxStats(session.GetTxStats());
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Unable To Print TxStats.", "MQManager Utility", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Console.WriteLine(ex.ToString());
+                        }
+                    }
+                }
+                else
+                    addDataToQueue();
+                e.Handled = true;
+            }
+        }
+
+        private void SelectHostKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (Convert.ToInt32(e.KeyChar) == 13)
+            {
+                if (svrHost.Text.ToUpper().CompareTo("MQMABOUT") == 0)
+                    MessageBox.Show("MQManager Utility v1.3\nAuthor: Rohit Agrawal\nEmail: rohit.agrawal@barclays.com", "MQManager Utility", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                else if (svrHost.Text.ToUpper().CompareTo("MQMVERSION") == 0)
+                    MessageBox.Show("MQManager Utility v1.3\nIBM Client Version: 7.5.0.5\nSolace Version: 7.1.0.42", "MQManager Utility", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                else if (svrHost.Text.ToUpper().Contains("REVLIST") || svrHost.Text.ToUpper().Contains("REVSUMMARY"))
+                    MessageBox.Show("*** REVISION SUMMARY ***\n\nv1.3\n- Added Solace Queue Support.\n\nv1.2\n- Added Progress Trackers.\n- Added More Controls To Display Panel.\n- Modified Queue Configuration Details.\n- Fixed Queue Reader Count(s) Issue.\n- Fixed Display Message Item Count(s) Issue.\n\nv1.1\n- Added SSL Support.\n- Added Support For Configurable Connection Details.\n- Fixed IBM WMQ Write Encoding Issue.\n\nv1.1\n- Initial Release.", "MQManager Utility", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                e.Handled = true;
+            }
+        }
+
+        private void SendMessasgeKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (Convert.ToInt32(e.KeyChar) == 13)
+            {
+                button3_Click_2(sender, e);
+                e.Handled = true;
+            }
+        }
+
+        private String getCurrentTime()
+        {
+            return "[" + DateTime.Now.ToLocalTime() + "." + DateTime.Now.TimeOfDay.Milliseconds.ToString() + "] ";
+        }
+
+        private void conc_Click(object sender, EventArgs e)
+        {
+            disableConPanel();
+            try
+            {
+                if (typeText.Text.Contains("IBM"))
+                    connectIBM();
+                else
+                    connectSOL();
+
+                if (String.IsNullOrEmpty(clearMsgList.Text))
+                {
+                    clearMsgList.Text += getCurrentTime() + "Successfully Connected To The Server: " + svrHost.Text.ToString();
+                    scrollCaret();
+                }
+                else
+                {
+                    clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Successfully Connected To The Server: " + svrHost.Text.ToString();
+                    scrollCaret();
+                }
+                this.Text = "MQManager - Connected: " + connProp.Text.ToString();
+                connStatus.Text = "Connected";
+                connStatus.ForeColor = Color.Green;
+                String fileName = "";
+                if (mqDetails.ContainsKey(connProp.SelectedIndex))
+                {
+                    MQDetails mqDetail = mqDetails.Values.ElementAt(connProp.SelectedIndex - 1);
+                    fileName = mqDetail.ID;
+                }
+                readFile(Application.StartupPath + @"\Config\" + fileName);
+                disableConPanel();
+                queueList.Focus();
+            }
+            catch (Exception ex)
+            {
+                if (String.IsNullOrEmpty(clearMsgList.Text))
+                {
+                    clearMsgList.Text += getCurrentTime() + "Error Occured While Connecting To The Server: " + svrHost.Text.ToString();
+                }
+                else
+                {
+                    clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Error Occured While Connecting To The Server: " + svrHost.Text.ToString();
+                }
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                scrollCaret();
+                enableConPanel();
+            }
+        }
+
+        private void connectIBM()
+        {
+            Hashtable queueProperties = new Hashtable();
+            queueProperties[MQC.TRANSPORT_PROPERTY] = MQC.TRANSPORT_MQSERIES_CLIENT;
+            queueProperties[MQC.HOST_NAME_PROPERTY] = svrHost.Text;
+            queueProperties[MQC.PORT_PROPERTY] = Int32.Parse(svrPort.Text);
+            queueProperties[MQC.CHANNEL_PROPERTY] = svrChannel.Text;
+            if (isSSL.Checked == true)
+            {
+                MQEnvironment.SSLKeyRepository = "*USER";
+                MQEnvironment.SSLCipherSpec = cipherSpec.Text;
+                queueProperties[MQC.SSL_CIPHER_SPEC_PROPERTY] = cipherSpec.Text;
+                queueProperties[MQC.SSL_CERT_STORE_PROPERTY] = keyStoreLoc.Text;
+            }
+            else
+            {
+                MQEnvironment.SSLKeyRepository = null;
+                MQEnvironment.SSLCipherSpec = null;
+            }
+            if (isAuth.Checked == true)
+            {
+                queueProperties[MQC.USER_ID_PROPERTY] = svrUser.Text;
+                queueProperties[MQC.PASSWORD_PROPERTY] = svrPass.Text;
+            }
+
+            queueManager = new MQQueueManager(svrQMgr.Text, queueProperties);
+            if (!queueManager.IsConnected)
+            {
+                queueManager.Connect();
+            }
+        }
+
+        private void connectSOL()
+        {
+            ContextProperties contextProps = new ContextProperties();
+            SessionProperties sessionProps = new SessionProperties();
+
+            sessionProps.Host = svrHost.Text + ":" + svrPort.Text;
+            sessionProps.VPNName = svrChannel.Text;
+            sessionProps.UserName = svrUser.Text;
+
+            context = ContextFactory.Instance.CreateContext(contextProps, null);
+            session = context.CreateSession(sessionProps, null, null);
+            session.Connect();
+        }
+
+        private void disCon_Click(object sender, EventArgs e)
+        {
+            if (typeText.Text.Contains("IBM"))
+                disconnectIBM();
+            else
+                disconnectSOL();
+
+            this.Text = "MQManager - Not Connected";
+            connStatus.Text = "Not Connected";
+            connStatus.ForeColor = Color.Red;
+            clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Successfully Disconnected From The Server: " + svrHost.Text.ToString();
+            scrollCaret();
+            enableConPanel();
+        }
+
+        private void disconnectIBM()
+        {
+            if (queueManager.IsConnected)
+            {
+                queueManager.Disconnect();
+
+            }
+        }
+
+        private void disconnectSOL()
+        {
+            try
+            {
+                session.Dispose();
+                context.Dispose();
+            }
+            catch (Exception ex)
+            {
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Error Occured While Disconnecting From The Server: " + svrHost.Text.ToString();
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                scrollCaret();
+            }
+        }
+
+        private void enableConPanel()
+        {
+            MQBox.Enabled = false;
+            PMsgBox.Enabled = false;
+            QDBox.Enabled = false;
+            QDMBox.Enabled = false;
+            DMsgBox.Enabled = false;
+            svrHost.Enabled = true;
+            svrPort.Enabled = true;
+            svrChannel.Enabled = true;
+            svrQMgr.Enabled = true;
+            isAuth.Enabled = true;
+            connProp.Enabled = true;
+            svrUser.Enabled = true;
+            svrPass.Enabled = true;
+            isSSL.Enabled = true;
+            keyStoreLoc.Enabled = true;
+            cipherSpec.Enabled = true;
+            loadKeyStoreLoc.Enabled = true;
+            disCon.Enabled = false;
+            conc.Enabled = true;
+        }
+
+        private void disableConPanel()
+        {
+            MQBox.Enabled = true;
+            PMsgBox.Enabled = true;
+            QDBox.Enabled = true;
+            QDMBox.Enabled = true;
+            DMsgBox.Enabled = true;
+            svrHost.Enabled = false;
+            svrPort.Enabled = false;
+            svrChannel.Enabled = false;
+            svrQMgr.Enabled = false;
+            isAuth.Enabled = false;
+            connProp.Enabled = false;
+            svrUser.Enabled = false;
+            svrPass.Enabled = false;
+            isSSL.Enabled = false;
+            keyStoreLoc.Enabled = false;
+            cipherSpec.Enabled = false;
+            loadKeyStoreLoc.Enabled = false;
+            disCon.Enabled = true;
+            conc.Enabled = false;
+        }
+
+        private void isAuth_CheckedChanged(object sender, EventArgs e)
+        {
+            if (isAuth.Checked == true)
+            {
+                svrUser.Enabled = true;
+                svrPass.Enabled = true;
+            }
+            else
+            {
+                svrUser.Enabled = false;
+                svrPass.Enabled = false;
+            }
+        }
+
+        private void addQueue_Click(object sender, EventArgs e)
+        {
+            addDataToQueue();
+            setData();
+        }
+
+        private void addDataToQueue()
+        {
+            if (!queueList.Items.Contains(queueName.Text))
+            {
+                queueList.Items.Add(queueName.Text);
+            }
+            queueList.Text = queueName.Text;
+        }
+
+        private void remQueue_Click(object sender, EventArgs e)
+        {
+            foreach (String queue in queueList.CheckedItems.OfType<String>().ToList())
+            {
+                queueList.Items.Remove(queue);
+            }
+            setData();
+        }
+
+        private void setData()
+        {
+            var dataSource = new AutoCompleteStringCollection();
+            dataSource.AddRange(queueList.Items.Cast<string>().ToArray());
+            selectQueueDM.AutoCompleteCustomSource = dataSource;
+            sendQueue.AutoCompleteCustomSource = dataSource;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            queueList.Items.Clear();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            getMessageContent();
+        }
+
+        private void getSOLMessage(int msgCount)
+        {
+            showProgress();
+            this.getQueueMessagesBGWorker.RunWorkerAsync(new Tuple<int, Boolean>(msgCount, false));
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            DialogResult result = queueListOpenDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                readFile(queueListOpenDialog.FileName);
+            }
+        }
+
+        private void readFile(String filePath)
+        {
+            queueList.Items.Clear();
+            try
+            {
+                using (StreamReader sr = new StreamReader(filePath))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        String line = sr.ReadLine();
+                        if (!String.IsNullOrEmpty(line))
+                        {
+                            queueName.Text = line;
+                            addDataToQueue();
+                        }
+                    }
+                }
+                setData();
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Successfully Loaded Queue Entries From File: " + filePath;
+                scrollCaret();
+            }
+            catch (Exception ex)
+            {
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Error Occured While Reading The Input File: " + filePath;
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                scrollCaret();
+            }
+        }
+
+        private void saveFile(String filePath)
+        {
+            try
+            {
+                if (queueList.Items.Count > 0)
+                {
+                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(filePath))
+                    {
+                        foreach (string queue in queueList.Items)
+                        {
+                            file.WriteLine(queue);
+                        }
+                    }
+                    clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Successfully Saved Queue Entries To File: " + filePath;
+                    scrollCaret();
+                }
+                else
+                {
+                    clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Queue List Is Empty. Nothing Saved." + filePath;
+                    scrollCaret();
+                }
+            }
+            catch (Exception ex)
+            {
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Error Occured While Saving The Output File: " + filePath;
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                scrollCaret();
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            showProgress();
+            this.showMessagesBGWorker.RunWorkerAsync(false);
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            showProgress();
+            this.showMessagesBGWorker.RunWorkerAsync(true);
+        }
+
+        private void setDispData(int index)
+        {
+            filePath.Text = displayMsgDict.Keys.ElementAt(index);
+            displayMsg.Text = displayMsgDict.Values.ElementAt(index);
+            dispCounter.Text = Convert.ToString(index);
+        }
+
+        private void setMsgCount()
+        {
+            if (displayMsgDict.Count > 0)
+            {
+                dispCount.Text = displayMsgDict.Count.ToString();
+            }
+        }
+
+        private void clearMsgs_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Please Confirm To Delete All Message(s) From Queue.", "MQManager Utility", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                showProgress();
+                this.clearQueueBGWorker.RunWorkerAsync();
+            }
+        }
+
+        private void button4_Click_1(object sender, EventArgs e)
+        {
+            updateMsgContent();
+            moveToFirst();
+        }
+
+        private void moveToFirst()
+        {
+            if (Int32.Parse(dispCounter.Text) != 0)
+            {
+                filePath.Text = displayMsgDict.Keys.ElementAt(0);
+                displayMsg.Text = displayMsgDict.Values.ElementAt(0);
+                dispCounter.Text = Convert.ToString(0);
+            }
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            updateMsgContent();
+            moveToNext();
+        }
+
+        private void moveToNext()
+        {
+            if (Int32.Parse(dispCounter.Text) < displayMsgDict.Count - 1)
+            {
+                filePath.Text = displayMsgDict.Keys.ElementAt(Int32.Parse(dispCounter.Text) + 1);
+                displayMsg.Text = displayMsgDict.Values.ElementAt(Int32.Parse(dispCounter.Text) + 1);
+                dispCounter.Text = Convert.ToString(Int32.Parse(dispCounter.Text) + 1);
+            }
+        }
+
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+            updateMsgContent();
+            moveToPrevious();
+        }
+
+        private void moveToPrevious()
+        {
+            if (Int32.Parse(dispCounter.Text) > 0)
+            {
+                filePath.Text = displayMsgDict.Keys.ElementAt(Int32.Parse(dispCounter.Text) - 1);
+                displayMsg.Text = displayMsgDict.Values.ElementAt(Int32.Parse(dispCounter.Text) - 1);
+                dispCounter.Text = Convert.ToString(Int32.Parse(dispCounter.Text) - 1);
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            updateMsgContent();
+            moveToLast();
+        }
+
+        private void moveToLast()
+        {
+            if (Int32.Parse(dispCounter.Text) != displayMsgDict.Count - 1)
+            {
+                filePath.Text = displayMsgDict.Keys.ElementAt(displayMsgDict.Count - 1);
+                displayMsg.Text = displayMsgDict.Values.ElementAt(displayMsgDict.Count - 1);
+                dispCounter.Text = Convert.ToString(displayMsgDict.Count - 1);
+            }
+        }
+
+        private void updateMsgContent()
+        {
+            if (!String.IsNullOrEmpty(filePath.Text) && displayMsgDict.ContainsKey(filePath.Text.ToString()))
+            {
+                displayMsgDict[filePath.Text.ToString()] = displayMsg.Text.ToString();
+            }
+        }
+
+        private void button6_Click_1(object sender, EventArgs e)
+        {
+            showProgress();
+            this.putMessagesBGWorker.RunWorkerAsync(false);
+        }
+
+        private void button3_Click_2(object sender, EventArgs e)
+        {
+            showProgress();
+            this.putMessagesBGWorker.RunWorkerAsync(true);
+        }
+
+        private void pushIBM(MQQueue queue, String text)
+        {
+            MQMessage message = new MQMessage();
+            message.WriteString(text);
+            message.Format = MQC.MQFMT_STRING;
+            queue.Put(message);
+        }
+
+        private void pushSOL(IMessage message, String text)
+        {
+            message.Destination = ContextFactory.Instance.CreateQueue(sendQueue.Text.Trim());
+            message.DeliveryMode = MessageDeliveryMode.Persistent;
+            message.BinaryAttachment = Encoding.ASCII.GetBytes(text);
+            session.Send(message);
+        }
+
+        private void rmDispMsg_Click(object sender, EventArgs e)
+        {
+            DialogResult result = displayFilesOpenDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                addFilesToDisplay(displayFilesOpenDialog.FileNames);
+            }
+        }
+
+        private void btnGetTop10_Click(object sender, EventArgs e)
+        {
+            if (typeText.Text.Contains("IBM"))
+                getIBMMessage(10);
+            else
+                getSOLMessage(10);
+        }
+
+        private void btnGetTop15_Click(object sender, EventArgs e)
+        {
+            if (typeText.Text.Contains("IBM"))
+                getIBMMessage(15);
+            else
+                getSOLMessage(15);
+        }
+
+        private void btnGetTop25_Click(object sender, EventArgs e)
+        {
+            if (typeText.Text.Contains("IBM"))
+                getIBMMessage(25);
+            else
+                getSOLMessage(25);
+        }
+
+        private void btnGetTop50_Click(object sender, EventArgs e)
+        {
+            if (typeText.Text.Contains("IBM"))
+                getIBMMessage(50);
+            else
+                getSOLMessage(50);
+        }
+
+        private void btnGetTop100_Click(object sender, EventArgs e)
+        {
+            if (typeText.Text.Contains("IBM"))
+                getIBMMessage(100);
+            else
+                getSOLMessage(100);
+        }
+
+        private void btnGetTop150_Click(object sender, EventArgs e)
+        {
+            if (typeText.Text.Contains("IBM"))
+                getIBMMessage(150);
+            else
+                getSOLMessage(150);
+        }
+
+        private void btnGetTop250_Click(object sender, EventArgs e)
+        {
+            if (typeText.Text.Contains("IBM"))
+                getIBMMessage(250);
+            else
+                getSOLMessage(250);
+        }
+
+        private void btnGetTop500_Click(object sender, EventArgs e)
+        {
+            if (typeText.Text.Contains("IBM"))
+                getIBMMessage(500);
+            else
+                getSOLMessage(500);
+        }
+
+        private void btnGetTop750_Click(object sender, EventArgs e)
+        {
+            if (typeText.Text.Contains("IBM"))
+                getIBMMessage(750);
+            else
+                getSOLMessage(750);
+        }
+
+        private void btnGetTop1000_Click(object sender, EventArgs e)
+        {
+            if (typeText.Text.Contains("IBM"))
+                getIBMMessage(1000);
+            else
+                getSOLMessage(1000);
+        }
+
+        private void btnGetAll_Click(object sender, EventArgs e)
+        {
+            if (typeText.Text.Contains("IBM"))
+                getIBMMessage(999999);
+            else
+                getSOLMessage(999999);
+        }
+
+        private Dictionary<Int32, MQDetails> parseCSV()
+        {
+            Dictionary<Int32, MQDetails> parsedData = new Dictionary<Int32, MQDetails>();
+
+            try
+            {
+                using (StreamReader readFile = new StreamReader(Application.StartupPath + @"\Config\MQConfig"))
+                {
+                    int counter = 1;
+                    string line = readFile.ReadLine();
+                    while ((line = readFile.ReadLine()) != null)
+                    {
+                        try
+                        {
+                            MQDetails mqDetail = new MQDetails();
+                            string[] row = line.Split(',');
+                            mqDetail.ID = row[0];
+                            mqDetail.DisplayName = row[1];
+                            mqDetail.Hostaname = row[2];
+                            mqDetail.Port = row[3];
+                            mqDetail.ChannelName = row[4];
+                            mqDetail.QueueManager = row[5];
+                            mqDetail.isSSL = row[6];
+                            mqDetail.KeyStoreLocation = row[7];
+                            mqDetail.CipherSpec = row[8];
+                            mqDetail.isAuthRequired = row[9];
+                            mqDetail.Username = row[10];
+                            mqDetail.Password = row[11];
+                            parsedData.Add(counter++, mqDetail);
+                        }
+                        catch (Exception ex)
+                        {
+                            clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Unable To Parse An Entry From The Configuration File: " + Application.StartupPath + @"\Config\MQConfig";
+                            clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                            scrollCaret();
+                        }
+                    }
+
+                    if (parsedData.Count > 0)
+                    {
+                        foreach (MQDetails mqDetail in parsedData.Values)
+                            connProp.Items.Add(mqDetail.DisplayName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Error Occured While Parsing The Configuration File: " + Application.StartupPath + @"\Config\MQConfig";
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                scrollCaret();
+            }
+
+            return parsedData;
+        }
+
+        private void scrollCaret()
+        {
+            clearMsgList.Text += Environment.NewLine + ".";
+            clearMsgList.SelectionStart = clearMsgList.Text.Length;
+            clearMsgList.ScrollToCaret();
+        }
+
+        private void button1_Click_2(object sender, EventArgs e)
+        {
+            int openOptions = MQC.MQOO_FAIL_IF_QUIESCING | MQC.MQOO_INPUT_SHARED | MQC.MQOO_BROWSE;
+            try
+            {
+                MQQueue newQueue = queueManager.AccessQueue(selectQueueDM.Text.Trim(), openOptions);
+                MQMessage theMessage = new MQMessage();
+                MQGetMessageOptions gmo = new MQGetMessageOptions();
+                gmo.Options = MQC.MQGMO_WAIT | MQC.MQGMO_BROWSE_FIRST;
+                gmo.MatchOptions = MQC.MQMO_MATCH_MSG_ID;
+                gmo.WaitInterval = 100;
+                try
+                {
+                    theMessage.MessageId = (byte[])associationDict[messageList.SelectedIndex];
+                    newQueue.Get(theMessage, gmo);
+                    String msgText = theMessage.ReadString(theMessage.MessageLength);
+                    MessageBox.Show(msgText);
+                    gmo.Options = MQC.MQGMO_WAIT | MQC.MQGMO_BROWSE_NEXT;
+                }
+                catch (MQException ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+                newQueue.Close();
+            }
+            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+        }
+
+        private void delSelMsgs_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Please Confirm To Delete Selected Message(s) From Queue.", "MQManager Utility", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                showProgress();
+                this.deleteSelectedBGWorker.RunWorkerAsync();
+            }
+        }
+
+        private void retrieveQueueDetails()
+        {
+            /* Retrieve Details */
+            try
+            {
+                String queueName;
+                if (String.Compare(lblQName.Text.ToString(), "---") == 0 && null != queueList.SelectedItem)
+                {
+                    queueName = queueList.SelectedItem.ToString();
+                }
+                else
+                {
+                    queueName = lblQName.Text.ToString();
+                }
+
+                if (refreshFlag)
+                {
+                    if (typeText.Text.Contains("IBM"))
+                    {
+                        /* Set IBM Queue Header */
+                        int openOptions = MQC.MQOO_BROWSE | MQC.MQOO_INQUIRE | MQC.MQOO_INPUT_SHARED | MQC.MQOO_FAIL_IF_QUIESCING;
+
+                        MQQueue newQueue = queueManager.AccessQueue(queueName, openOptions);
+
+                        lblQName.Text = newQueue.Name.ToString();
+                        lblQDesc.Text = newQueue.Description.ToString();
+                        lblQCR.Text = newQueue.ConnectionReference.ToString();
+                        lblQCDate.Text = newQueue.CreationDateTime.ToString();
+                        lblQADate.Text = newQueue.AlterationDateTime.ToString();
+                        lblQType.Text = newQueue.QueueType.ToString();
+                        lblQPriority.Text = newQueue.DefaultPriority.ToString();
+                        lblQDef.Text = newQueue.DefinitionType.ToString();
+                        lblQOpenStatus.Text = newQueue.OpenStatus.ToString();
+
+                        lblQCDepth.Text = newQueue.CurrentDepth.ToString();
+                        lblQDLow.Text = newQueue.DepthLowLimit.ToString();
+                        lblQDHigh.Text = newQueue.DepthHighLimit.ToString();
+                        lblQMaxDepth.Text = newQueue.MaximumDepth.ToString();
+                        lblQMaxMsgLength.Text = newQueue.MaximumMessageLength.ToString();
+                        lblQOpenInpCount.Text = (newQueue.OpenInputCount - 1).ToString();
+                        lblQOpenOutputCount.Text = newQueue.OpenOutputCount.ToString();
+                        lblQRetInterval.Text = newQueue.RetentionInterval.ToString();
+                        lblQServInterval.Text = newQueue.ServiceInterval.ToString();
+
+                        if (String.IsNullOrEmpty(selectQueueDM.Text.Trim()))
+                        {
+                            selectQueueDM.Text = queueName;
+                        }
+                        if (String.IsNullOrEmpty(sendQueue.Text.Trim()))
+                        {
+                            sendQueue.Text = queueName;
+                        }
+
+                        /* Close Queue */
+                        newQueue.Close();
+                    }
+                    else
+                    {
+                        IQueue queue = ContextFactory.Instance.CreateQueue(queueName);
+                        BrowserProperties browserProps = new BrowserProperties();
+                        IBrowser browser = session.CreateBrowser(queue, browserProps);
+                        int msgCount = 0;
+                        while (browser.GetNext() != null)
+                        {
+                            msgCount++;
+                        }
+
+                        lblQName.Text = queueName.ToString();
+                        lblQDesc.Text = "Solace Queue: " + queueName.ToString();
+                        lblQCR.Text = "Client Machine";
+                        lblQCDate.Text = "Unknown";
+                        lblQADate.Text = "Unknown";
+                        lblQType.Text = "Local";
+                        lblQPriority.Text = "Normal";
+                        lblQDef.Text = "Unknown";
+                        lblQOpenStatus.Text = "Open";
+
+                        lblQCDepth.Text = msgCount.ToString();
+                        lblQDLow.Text = "N/A";
+                        lblQDHigh.Text = "N/A";
+                        lblQMaxDepth.Text = "N/A";
+                        lblQMaxMsgLength.Text = "N/A";
+                        lblQOpenInpCount.Text = "Unknown";
+                        lblQOpenOutputCount.Text = "Unknown";
+                        lblQRetInterval.Text = "N/A";
+                        lblQServInterval.Text = "N/A";
+
+                        if (String.IsNullOrEmpty(selectQueueDM.Text.Trim()))
+                        {
+                            selectQueueDM.Text = queueName;
+                        }
+                        if (String.IsNullOrEmpty(sendQueue.Text.Trim()))
+                        {
+                            sendQueue.Text = queueName;
+                        }
+
+                        /* Close Browser */
+                        browser.Dispose();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Error Occured While Getting The Message(s) On Queue: " + queueName;
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                scrollCaret();
+            }
+        }
+
+        private void button2_Click_3(object sender, EventArgs e)
+        {
+            associationDict.Clear();
+            messageDict.Clear();
+            messageList.Items.Clear();
+            clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Successfully Cleared All The Message(s) From List.";
+            scrollCaret();
+        }
+
+        private void QueueDetailsRefresh(object sender, EventArgs e)
+        {
+            if (String.Compare(lblQName.Text.ToString(), "---") == 0 && null != queueList.SelectedItem)
+            {
+                getQueueData(queueList.SelectedItem.ToString(), true);
+            }
+            else
+            {
+                getQueueData(lblQName.Text.ToString(), true);
+            }
+        }
+
+        private void QueueDetailsForceRefresh(object sender, EventArgs e)
+        {
+            getQueueData(queueList.SelectedItem.ToString(), true);
+        }
+
+        private void loadKeyStoreLoc_Click(object sender, EventArgs e)
+        {
+            DialogResult result = kdbStoreOpenDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                keyStoreLoc.Text = kdbStoreOpenDialog.FileName.Substring(0, kdbStoreOpenDialog.FileName.Length - 4);
+            }
+        }
+
+        private void connProp_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (flag && mqDetails.ContainsKey(connProp.SelectedIndex))
+            {
+                MQDetails mqDetail = mqDetails.Values.ElementAt(connProp.SelectedIndex - 1);
+                svrPort.Text = svrHost.Text = mqDetail.Hostaname;
+                svrPort.Text = mqDetail.Port;
+                svrChannel.Text = mqDetail.ChannelName;
+                svrQMgr.Text = mqDetail.QueueManager;
+                if (mqDetail.isSSL.ToUpper().CompareTo("YES") == 0)
+                    isSSL.Checked = true;
+                else
+                    isSSL.Checked = false;
+                keyStoreLoc.Text = mqDetail.KeyStoreLocation;
+                cipherSpec.Text = mqDetail.CipherSpec;
+                if (mqDetail.isAuthRequired.ToUpper().CompareTo("YES") == 0)
+                    isAuth.Checked = true;
+                else
+                    isAuth.Checked = false;
+                svrUser.Text = mqDetail.Username;
+                svrPass.Text = mqDetail.Password;
+            }
+        }
+
+        private void QueueDetailsRefresh(object sender, KeyPressEventArgs e)
+        {
+            if (String.Compare(lblQName.Text.ToString(), "---") == 0 && null != queueList.SelectedItem)
+            {
+                getQueueData(queueList.SelectedItem.ToString(), true);
+            }
+            else
+            {
+                getQueueData(lblQName.Text.ToString(), true);
+            }
+        }
+
+        private void saveCFile_Click(object sender, EventArgs e)
+        {
+            if (mqDetails.ContainsKey(connProp.SelectedIndex))
+            {
+                MQDetails mqDetail = mqDetails.Values.ElementAt(connProp.SelectedIndex - 1);
+                queueListSaveDialog.FileName = mqDetail.ID;
+                queueListSaveDialog.InitialDirectory = Application.StartupPath + @"\Config\";
+            }
+            else
+            {
+                queueListSaveDialog.FileName = "MQMQueueListFile";
+            }
+            DialogResult result = queueListSaveDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                saveFile(queueListSaveDialog.FileName);
+            }
+        }
+
+        private void svrHost_TextChanged(object sender, EventArgs e)
+        {
+            if (!svrHost.Text.ToUpper().Contains("SOL"))
+            {
+                typeColor.BackColor = Color.DodgerBlue;
+                isChannel.Text = "Channel Name:";
+                typeText.Text = "IBM";
+                refreshFlag = true;
+            }
+            else
+            {
+                typeColor.BackColor = Color.MediumVioletRed;
+                isChannel.Text = "VPN Name:";
+                typeText.Text = "SOL";
+                refreshFlag = false;
+            }
+        }
+
+        private void btnGetMessages_Click(object sender, EventArgs e)
+        {
+            if (typeText.Text.Contains("IBM"))
+                getIBMMessage(1);
+            else
+                getSOLMessage(1);
+        }
+
+        private void btnAddFile_Click(object sender, EventArgs e)
+        {
+            updateMsgContent();
+            if (!String.IsNullOrEmpty(filePath.Text))
+            {
+                displayMsgDict.Add("auto_" + System.DateTime.Now.TimeOfDay.TotalMilliseconds.ToString() + "_" + System.DateTime.Now.ToShortDateString(), "");
+                displayMsg.Text = "";
+                setDispData(displayMsgDict.Count - 1);
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Successfully Added File To Display Message(s).";
+                scrollCaret();
+                setMsgCount();
+            }
+            else if (!String.IsNullOrEmpty(displayMsg.Text))
+            {
+                displayMsgDict.Add("auto_" + System.DateTime.Now.TimeOfDay.TotalMilliseconds.ToString() + "_M1" + System.DateTime.Now.ToShortDateString(), displayMsg.Text.ToString());
+                displayMsgDict.Add("auto_" + System.DateTime.Now.TimeOfDay.TotalMilliseconds.ToString() + "_M2_" + System.DateTime.Now.ToShortDateString(), "");
+                displayMsg.Text = "";
+                setDispData(displayMsgDict.Count - 1);
+                setMsgCount();
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Successfully Added File To Display Message(s).";
+                scrollCaret();
+            }
+        }
+
+        private void btnDelFile_Click(object sender, EventArgs e)
+        {
+            if (!String.IsNullOrEmpty(filePath.Text))
+            {
+                displayMsgDict.Remove(filePath.Text);
+                if (displayMsgDict.Count > 0)
+                {
+                    filePath.Text = displayMsgDict.Keys.ElementAt(0);
+                    displayMsg.Text = displayMsgDict.Values.ElementAt(0);
+                    dispCounter.Text = Convert.ToString(0);
+                }
+                else
+                {
+                    filePath.Text = "";
+                    displayMsg.Text = "";
+                    dispCounter.Text = "0";
+                }
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Successfully Removed File: " + filePath.Text.ToString() + " From Display Message(s).";
+                scrollCaret();
+            }
+            setMsgCount();
+        }
+
+        private void btnSaveFile_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (displayMsgDict.ContainsKey(filePath.Text.ToString()))
+                {
+                    File.WriteAllLines(Application.StartupPath + "\\Output_" + DateTime.Now.ToShortDateString().Replace('/', '-') + "\\" + filePath.Text.Replace('/', '-').ToString(), displayMsg.Lines);
+                }
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "1 File Saved Successfully.";
+                scrollCaret();
+            }
+            catch (Exception ex)
+            {
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Failed To Save File: " + filePath.Text.Replace('/', '-').ToString();
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                scrollCaret();
+            }
+        }
+
+        private void btnSaveAll_Click(object sender, EventArgs e)
+        {
+            showProgress();
+            this.saveBGWorker.RunWorkerAsync();
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            displayMsg.Text = "";
+        }
+
+        private void btnDelAll_Click(object sender, EventArgs e)
+        {
+            if (displayMsgDict.Count > 0)
+            {
+                displayMsgDict.Clear();
+                filePath.Text = "";
+                displayMsg.Text = "";
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Successfully Removed " + dispCounter.Text.ToString() + " File(s) From Display Message(s).";
+                scrollCaret();
+            }
+            dispCounter.Text = "0";
+            dispCount.Text = "0";
+        }
+
+        private void btnCut_Click(object sender, EventArgs e)
+        {
+            displayMsg.Cut();
+        }
+
+        private void btnCopy_Click(object sender, EventArgs e)
+        {
+            displayMsg.Copy();
+        }
+
+        private void btnPaste_Click(object sender, EventArgs e)
+        {
+            displayMsg.Paste();
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            searchAllFiles = false;
+            FindReplace findReplace = new FindReplace();
+            findReplace.Show();
+            findReplace.Focus();
+        }
+
+        private void btnEncoding_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        public static void PrintRxStats(IDictionary<Stats_Rx, Int64> stats)
+        {
+            StringBuilder sb = new StringBuilder();
+            Stats_Rx[] statsValues = (Stats_Rx[])Enum.GetValues(typeof(Stats_Rx));
+            sb.Append("Session Rx stats: ");
+            for (int i = 0; i < statsValues.Length; i++)
+            {
+                String value = "n/a";
+                try
+                {
+                    value = "" + stats[statsValues[i]];
+                }
+                catch (Exception)
+                {
+
+                }
+                sb.Append(string.Format("\n\t{0}: {1}", statsValues[i], value));
+            }
+            MessageBox.Show(sb.ToString(), "MQManager Utility", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        public static void PrintTxStats(IDictionary<Stats_Tx, Int64> stats)
+        {
+            StringBuilder sb = new StringBuilder();
+            Stats_Tx[] statsValues = (Stats_Tx[])Enum.GetValues(typeof(Stats_Tx));
+            sb.Append("Session Tx stats: ");
+            for (int i = 0; i < statsValues.Length; i++)
+            {
+                String value = "n/a";
+                try
+                {
+                    value = "" + stats[statsValues[i]];
+                }
+                catch (Exception)
+                {
+
+                }
+                sb.Append(string.Format("\n\t{0}: {1}", statsValues[i], value));
+            }
+            MessageBox.Show(sb.ToString(), "MQManager Utility", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void displayMsg_MouseDown(object sender, MouseEventArgs e)
+        {
+            selectionStart = displayMsg.GetCharIndexFromPosition(new System.Drawing.Point(e.X, e.Y));
+        }
+
+        private void displayMsg_MouseUp(object sender, MouseEventArgs e)
+        {
+            selectionEnd = displayMsg.GetCharIndexFromPosition(new System.Drawing.Point(e.X, e.Y));
+        }
+
+        private void btnSearchAll_Click(object sender, EventArgs e)
+        {
+            searchAllFiles = true;
+            FindReplace findReplace = new FindReplace();
+            findReplace.Show();
+            findReplace.Focus();
+        }
+
+        public void searchReplaceDisplayMsg(String searchString, String replaceString, bool matchCase, bool wholeWord, bool isReverse, bool isReplace)
+        {
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                if (searchAllFiles)
+                    moveToFirst();
+
+                if (selectionStart > selectionEnd)
+                {
+                    Int32 x = selectionStart;
+                    selectionStart = selectionEnd;
+                    selectionEnd = x;
+                }
+
+                do
+                {
+                    Int32 index = 0;
+                    if (searchAllFiles)
+                    {
+                        selectionStart = 0;
+                        selectionEnd = displayMsg.TextLength;
+                    }
+
+                    if (matchCase)
+                        index = displayMsg.Find(searchString, selectionStart, selectionEnd, RichTextBoxFinds.MatchCase);
+                    else if (wholeWord)
+                        index = displayMsg.Find(searchString, selectionStart, selectionEnd, RichTextBoxFinds.WholeWord);
+                    else if (isReverse)
+                        index = displayMsg.Find(searchString, selectionStart, selectionEnd, RichTextBoxFinds.Reverse);
+                    else if (matchCase && wholeWord)
+                        index = displayMsg.Find(searchString, selectionStart, selectionEnd, RichTextBoxFinds.MatchCase & RichTextBoxFinds.WholeWord);
+                    else if (matchCase && isReverse)
+                        index = displayMsg.Find(searchString, selectionStart, selectionEnd, RichTextBoxFinds.MatchCase & RichTextBoxFinds.Reverse);
+                    else if (isReverse && wholeWord)
+                        index = displayMsg.Find(searchString, selectionStart, selectionEnd, RichTextBoxFinds.Reverse & RichTextBoxFinds.WholeWord);
+                    else if (isReverse && wholeWord && matchCase)
+                        index = displayMsg.Find(searchString, selectionStart, selectionEnd, RichTextBoxFinds.MatchCase & RichTextBoxFinds.Reverse & RichTextBoxFinds.WholeWord);
+                    else
+                        index = displayMsg.Find(searchString, selectionStart, selectionEnd, RichTextBoxFinds.None);
+
+                    if (index > 0)
+                    {
+                        displayMsg.Focus();
+                        if (isReplace)
+                        {
+                            displayMsg.Select(index, searchString.Length);
+                            displayMsg.SelectedText = replaceString;
+                        }
+                        else
+                            displayMsg.Select(index, searchString.Length);
+                        selectionStart = index + searchString.Length;
+                        break;
+                    }
+                    else
+                    {
+                        if (searchAllFiles && Int32.Parse(dispCounter.Text) < displayMsgDict.Count - 1)
+                        {
+                            moveToNext();
+                        }
+                        else
+                            MessageBox.Show("Found No More Instances of Text: " + searchString, "MQManager Utility", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
+                } while (searchAllFiles && Int32.Parse(dispCounter.Text) < displayMsgDict.Count - 1);
+            }
+        }
+
+        private void showProgress()
+        {
+            progressForm = new ProgressTracker();
+            this.Enabled = false;
+            progressForm.Show();
+        }
+
+        private void OnProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            if (e.UserState is String)
+            {
+                progressForm.progressText = (String)e.UserState;
+                progressForm.changeProgress();
+            }
+        }
+
+        private void OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Operation Cancelled.";
+                scrollCaret();
+            }
+            else
+            {
+                if (e.Error != null)
+                {
+                    clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + e.Error.ToString();
+                    scrollCaret();
+                }
+            }
+
+            /* Close Progress Form */
+            this.Enabled = true;
+            progressForm.Close();
+        }
+
+        private void OnDoSave(object sender, DoWorkEventArgs e)
+        {
+            for (Int32 x = 0; x < displayMsgDict.Count; x++)
+            {
+                /* Check Cancellation */
+                if (this.saveBGWorker.CancellationPending)
+                {
+                    e.Cancel = true;
+                    break;
+                }
+
+                /* Report Progress */
+                this.saveBGWorker.ReportProgress(-1, string.Format("Task Progress: {0}%", (int)(((double)x / (double)displayMsgDict.Count) * 100)));
+
+                /* Do Steps */
+                try
+                {
+                    if (displayMsgDict.ContainsKey(filePath.Text.ToString()))
+                    {
+                        String dirName = "Output_" + DateTime.Now.ToShortDateString().Replace('/', '-');
+                        Directory.CreateDirectory(dirName);
+                        File.WriteAllText(Application.StartupPath + "\\" + dirName + "\\" + displayMsgDict.Keys.ElementAt(x).Replace('/', '-').ToString(), displayMsgDict.Values.ElementAt(x));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Failed To Save File: " + filePath.Text.Replace('/', '-').ToString();
+                    clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                    scrollCaret();
+
+                    /* Abort Operation */
+                    this.saveBGWorker.CancelAsync();
+                }
+            }
+
+            /* Post Progress */
+
+            clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Successfully Saved " + displayMsgDict.Count + " File(s)";
+            scrollCaret();
+        }
+
+        private void OnDoClearQueue(object sender, DoWorkEventArgs e)
+        {
+            /* Check Cancellation */
+            if (this.clearQueueBGWorker.CancellationPending)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            /* Report Progress */
+            this.clearQueueBGWorker.ReportProgress(-1, string.Format("Clearing Queue Messages..."));
+
+            /* Do Steps */
+            try
+            {
+                if (typeText.Text.Contains("IBM"))
+                    deleteIBMMessages();
+                else
+                    deleteSOLMessages();
+                associationDict.Clear();
+                messageDict.Clear();
+                messageList.Items.Clear();
+            }
+            catch (Exception ex)
+            {
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Failed To Clear The Queue: " + selectQueueDM.Text.ToString();
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                scrollCaret();
+
+                /* Abort Operation */
+                this.clearQueueBGWorker.CancelAsync();
+            }
+
+            /* ----- Post Processing Operations ----- */
+            /* Check Cancellation */
+            if (this.clearQueueBGWorker.CancellationPending)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            /* Report Progress */
+            this.clearQueueBGWorker.ReportProgress(-1, string.Format("Fetching Queue Details..."));
+            retrieveQueueDetails();
+        }
+
+        private void OnDoGetMessages(object sender, DoWorkEventArgs e)
+        {
+            /* Unwrap Object */
+            Tuple<int,Boolean> args = (Tuple<int,Boolean>) e.Argument;
+            int count = args.Item1;
+            Boolean localFlag = args.Item2;
+
+            /* Set IBM Headers*/
+            int openOptions = MQC.MQOO_FAIL_IF_QUIESCING | MQC.MQOO_INPUT_SHARED | MQC.MQOO_BROWSE;
+            messageDict.Clear();
+            associationDict.Clear();
+            messageList.Items.Clear();
+
+            /* Main Flow */
+            try
+            {
+                if (localFlag)
+                {
+                    /* Try Opening Queue*/
+                    MQQueue newQueue = queueManager.AccessQueue(selectQueueDM.Text.Trim(), openOptions);
+
+                    MQMessage theMessage = new MQMessage();
+                    MQGetMessageOptions gmo = new MQGetMessageOptions();
+                    gmo.Options = MQC.MQGMO_WAIT | MQC.MQGMO_BROWSE_FIRST;
+                    gmo.MatchOptions = MQC.MQMO_NONE;
+                    gmo.WaitInterval = 100;
+
+                    for (Int32 x = 0; x < count; x++)
+                    {
+                        /* Check Cancellation */
+                        if (this.getQueueMessagesBGWorker.CancellationPending)
+                        {
+                            e.Cancel = true;
+                            break;
+                        }
+
+                        /* Report Progress */
+                        this.getQueueMessagesBGWorker.ReportProgress(-1, string.Format("Task Progress: {0}%", (int)(((double)x / (double)count) * 100)));
+
+                        /* Do Steps */
+                        try
+                        {
+                            newQueue.Get(theMessage, gmo);
+                            String msgText = theMessage.ReadString(theMessage.MessageLength);
+                            String msgIdStr = Convert.ToBase64String(theMessage.MessageId);
+                            messageDict.Add(messageList.Items.Count, msgText);
+                            associationDict.Add(messageList.Items.Count, theMessage.MessageId);
+                            messageList.Items.Add(msgIdStr + " (" + theMessage.PutDateTime.ToString() + ")");
+                            gmo.Options = MQC.MQGMO_WAIT | MQC.MQGMO_BROWSE_NEXT;
+                        }
+                        catch (MQException ex)
+                        {
+                            Console.WriteLine(ex.ToString());
+                            break;
+                        }
+                    }
+                    /* Close Queue */
+                    newQueue.Close();
+                }
+                else
+                {
+                    /* Open Queue */
+                    IQueue queue = ContextFactory.Instance.CreateQueue(selectQueueDM.Text.Trim());
+                    BrowserProperties browserProps = new BrowserProperties();
+                    IBrowser browser = session.CreateBrowser(queue, browserProps);
+                    IMessage message = ContextFactory.Instance.CreateMessage();
+                    clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Start Browsing Queue: " + selectQueueDM.Text.Trim().ToString();
+                    scrollCaret();
+                    int countPointer = 0;
+
+                    while ((message = browser.GetNext()) != null && countPointer < count)
+                    {
+                        /* Check Cancellation */
+                        if (this.getQueueMessagesBGWorker.CancellationPending)
+                        {
+                            e.Cancel = true;
+                            break;
+                        }
+
+                        /* Report Progress */
+                        this.getQueueMessagesBGWorker.ReportProgress(-1, string.Format("Task Progress: {0}%", (int)(((double)countPointer / (double)count) * 100)));
+
+                        /* Do Steps */
+                        try
+                        {
+                            String msgText = System.Text.Encoding.UTF8.GetString(message.BinaryAttachment);
+                            String msgIdStr = message.ADMessageId.ToString();
+                            messageDict.Add(messageList.Items.Count, msgText);
+                            Byte[] unqMsgId = new Byte[11];
+                            if (message.BinaryAttachment.Length > 10)
+                                Array.Copy(message.BinaryAttachment, 0, unqMsgId, 0, 10);
+                            else
+                                unqMsgId = message.BinaryAttachment;
+                            associationDict.Add(messageList.Items.Count, unqMsgId);
+                            String tmpStamp = message.SenderTimestamp.ToString();
+                            if (tmpStamp.CompareTo("-1") == 0)
+                                messageList.Items.Add(msgIdStr + "_" + System.Text.Encoding.UTF8.GetString(unqMsgId) + " (" + System.DateTime.Now.TimeOfDay.TotalMilliseconds.ToString() + ")");
+                            else
+                                messageList.Items.Add(msgIdStr + "_" + System.Text.Encoding.UTF8.GetString(unqMsgId) + " (" + tmpStamp + ")");
+                            countPointer++;
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.ToString());
+                            break;
+                        }
+
+                    }
+                    /* Close Browser */
+                    browser.Dispose();
+                }
+
+                /* Do Rest */
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Displaying Message(s). Count: " + messageList.Items.Count.ToString();
+                scrollCaret();
+            }
+            catch (Exception ex)
+            {
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Error Occured While Getting The Message(s) On Queue: " + selectQueueDM.Text.Trim().ToString();
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                scrollCaret();
+            }
+
+            /* ----- Post Processing Operations ----- */
+            /* Check Cancellation */
+            if (this.getQueueMessagesBGWorker.CancellationPending)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            /* Report Progress */
+            this.getQueueMessagesBGWorker.ReportProgress(-1, string.Format("Fetching Queue Details..."));
+            retrieveQueueDetails();
+        }
+
+        private void OnDoGetQueueData(object sender, DoWorkEventArgs e)
+        {
+            /* Retrieve Arguments */
+            Tuple<String,Boolean> args = (Tuple<String,Boolean>) e.Argument;
+            String queueName = args.Item1;
+            Boolean localFlag = args.Item2;
+
+            /* Check Cancellation */
+            if (this.getQueueDetailsBGWorker.CancellationPending)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            /* Report Progress */
+            this.getQueueDetailsBGWorker.ReportProgress(-1, string.Format("Fetching Queue Details..."));
+
+            /* Set IBM Queue Header */
+            int openOptions = MQC.MQOO_BROWSE | MQC.MQOO_INQUIRE | MQC.MQOO_INPUT_SHARED | MQC.MQOO_FAIL_IF_QUIESCING;
+
+            /* Do Steps */
+            try
+            {
+                if (localFlag)
+                {
+                    MQQueue newQueue = queueManager.AccessQueue(queueName, openOptions);
+
+                    lblQName.Text = newQueue.Name.ToString();
+                    lblQDesc.Text = newQueue.Description.ToString();
+                    lblQCR.Text = newQueue.ConnectionReference.ToString();
+                    lblQCDate.Text = newQueue.CreationDateTime.ToString();
+                    lblQADate.Text = newQueue.AlterationDateTime.ToString();
+                    lblQType.Text = newQueue.QueueType.ToString();
+                    lblQPriority.Text = newQueue.DefaultPriority.ToString();
+                    lblQDef.Text = newQueue.DefinitionType.ToString();
+                    lblQOpenStatus.Text = newQueue.OpenStatus.ToString();
+
+                    lblQCDepth.Text = newQueue.CurrentDepth.ToString();
+                    lblQDLow.Text = newQueue.DepthLowLimit.ToString();
+                    lblQDHigh.Text = newQueue.DepthHighLimit.ToString();
+                    lblQMaxDepth.Text = newQueue.MaximumDepth.ToString();
+                    lblQMaxMsgLength.Text = newQueue.MaximumMessageLength.ToString();
+                    lblQOpenInpCount.Text = (newQueue.OpenInputCount - 1).ToString();
+                    lblQOpenOutputCount.Text = newQueue.OpenOutputCount.ToString();
+                    lblQRetInterval.Text = newQueue.RetentionInterval.ToString();
+                    lblQServInterval.Text = newQueue.ServiceInterval.ToString();
+
+                    if (String.IsNullOrEmpty(selectQueueDM.Text.Trim()))
+                    {
+                        selectQueueDM.Text = queueName;
+                    }
+                    if (String.IsNullOrEmpty(sendQueue.Text.Trim()))
+                    {
+                        sendQueue.Text = queueName;
+                    }
+
+                    /* Close Queue */
+                    newQueue.Close();
+                }
+                else
+                {
+                    IQueue queue = ContextFactory.Instance.CreateQueue(queueName);
+                    BrowserProperties browserProps = new BrowserProperties();
+                    IBrowser browser = session.CreateBrowser(queue, browserProps);
+                    int msgCount = 0;
+                    while (browser.GetNext() != null)
+                    {
+                        msgCount++;
+                    }
+
+                    lblQName.Text = queueName.ToString();
+                    lblQDesc.Text = "Solace Queue: " + queueName.ToString();
+                    lblQCR.Text = "Client Machine";
+                    lblQCDate.Text = "Unknown";
+                    lblQADate.Text = "Unknown";
+                    lblQType.Text = "Local";
+                    lblQPriority.Text = "Normal";
+                    lblQDef.Text = "Unknown";
+                    lblQOpenStatus.Text = "Open";
+
+                    lblQCDepth.Text = msgCount.ToString();
+                    lblQDLow.Text = "N/A";
+                    lblQDHigh.Text = "N/A";
+                    lblQMaxDepth.Text = "N/A";
+                    lblQMaxMsgLength.Text = "N/A";
+                    lblQOpenInpCount.Text = "Unknown";
+                    lblQOpenOutputCount.Text = "Unknown";
+                    lblQRetInterval.Text = "N/A";
+                    lblQServInterval.Text = "N/A";
+
+                    if (String.IsNullOrEmpty(selectQueueDM.Text.Trim()))
+                    {
+                        selectQueueDM.Text = queueName;
+                    }
+                    if (String.IsNullOrEmpty(sendQueue.Text.Trim()))
+                    {
+                        sendQueue.Text = queueName;
+                    }
+
+                    /* Close Browser */
+                    browser.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Error Occured While Getting The Message(s) On Queue: " + queueName;
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                scrollCaret();
+
+                /* Abort Operation */
+                this.getQueueDetailsBGWorker.CancelAsync();
+            }
+        }
+
+        private void OnDoWorkDeleteSelected(object sender, DoWorkEventArgs e)
+        {
+            /* Check Cancellation */
+            if (this.deleteSelectedBGWorker.CancellationPending)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            /* Report Progress */
+            this.deleteSelectedBGWorker.ReportProgress(-1, string.Format("Clearing Queue Messages..."));
+
+            /* Do Steps */
+            try
+            {
+                if (typeText.Text.Contains("IBM"))
+                    deleteSelectedIBMMessages();
+                else
+                    deleteSelectedSOLMessages();
+
+                /* Clear List Messages */
+                foreach (String message in messageList.CheckedItems.OfType<String>().ToList())
+                {
+                    messageList.Items.Remove(message);
+                }
+            }
+            catch (Exception ex)
+            {
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Failed To Delete Messages From Queue: " + selectQueueDM.Text.ToString();
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                scrollCaret();
+
+                /* Abort Operation */
+                this.deleteSelectedBGWorker.CancelAsync();
+            }
+
+            /* ----- Post Processing Operations ----- */
+            /* Check Cancellation */
+            if (this.deleteSelectedBGWorker.CancellationPending)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            /* Report Progress */
+            this.deleteSelectedBGWorker.ReportProgress(-1, string.Format("Fetching Queue Details..."));
+            retrieveQueueDetails();
+        }
+
+        private void OnDoWorkPutMessages(object sender, DoWorkEventArgs e)
+        {
+            /* Retrieve Arguments */
+            Boolean localFlag = (Boolean) e.Argument;
+
+            /* Pre-Operations */
+            updateMsgContent();
+            MQQueue queue = null;
+            IMessage message = null;
+
+            try {
+                if (typeText.Text.Contains("IBM"))
+                    queue = queueManager.AccessQueue(sendQueue.Text.Trim(), MQC.MQOO_OUTPUT);
+                else
+                    message = ContextFactory.Instance.CreateMessage();
+
+                if (localFlag)
+                {
+                    /* Report Progress */
+                    this.putMessagesBGWorker.ReportProgress(-1, string.Format("Sending Message To Queue..."));
+
+                    /* Do Steps */
+                    if (!String.IsNullOrEmpty(displayMsg.Text.ToString()))
+                    {
+                        try
+                        {
+                            if (typeText.Text.Contains("IBM"))
+                            {
+                                queue = queueManager.AccessQueue(sendQueue.Text.Trim(), MQC.MQOO_OUTPUT);
+                                pushIBM(queue, displayMsg.Text.ToString());
+                            }
+                            else
+                            {
+                                message = ContextFactory.Instance.CreateMessage();
+                                pushSOL(message, displayMsg.Text.ToString());
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Unable To Push The Message On Queue: " + sendQueue.Text.Trim().ToString();
+                            clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                            scrollCaret();
+
+                            /* Cancel Operation */
+                            this.putMessagesBGWorker.CancelAsync();
+                        }
+                    }
+                }
+                else /* Put All Messages */
+                {
+                    for (Int32 x = 0; x < displayMsgDict.Count; x++)
+                    {
+                        /* Check Cancellation */
+                        if (this.putMessagesBGWorker.CancellationPending)
+                        {
+                            e.Cancel = true;
+                            break;
+                        }
+
+                        /* Report Progress */
+                        this.putMessagesBGWorker.ReportProgress(-1, string.Format("Task Progress: {0}%", (int)(((double)x / (double)displayMsgDict.Count) * 100)));
+
+                        /* Do Steps */
+                        if (!String.IsNullOrEmpty(displayMsgDict.ElementAt(x).Value))
+                        {
+                            try
+                            {
+                                if (typeText.Text.Contains("IBM"))
+                                    pushIBM(queue, displayMsgDict.ElementAt(x).Value);
+                                else
+                                    pushSOL(message, displayMsgDict.ElementAt(x).Value);
+                            }
+                            catch (Exception ex)
+                            {
+                                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Unable To Push The Message On Queue: " + sendQueue.Text.Trim().ToString();
+                                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                                scrollCaret();
+
+                                /* Cancel Operation */
+                                this.putMessagesBGWorker.CancelAsync();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Unable To Push The Message On Queue: " + sendQueue.Text.Trim().ToString();
+                clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Exception: " + ex.ToString();
+                scrollCaret();
+            }
+
+            /* ----- Post Processing Operations ----- */
+            /* Check Cancellation */
+            if (this.putMessagesBGWorker.CancellationPending)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            /* Status */
+            clearMsgList.Text += Environment.NewLine + getCurrentTime() + "Successfully Pushed " + displayMsgDict.Count + " Message(s) On Queue: " + sendQueue.Text.Trim().ToString();
+            scrollCaret();
+
+            /* Report Progress */
+            this.putMessagesBGWorker.ReportProgress(-1, string.Format("Fetching Queue Details..."));
+            retrieveQueueDetails();
+        }
+
+        private void OnDoWorkShowMessages(object sender, DoWorkEventArgs e)
+        {
+            /* Retrieve Arguments */
+            Boolean localFlag = (Boolean)e.Argument;
+
+            if (localFlag)
+            {
+                for (int x = 0; x < messageList.CheckedIndices.Count; x++)
+                {
+                    /* Check Cancellation */
+                    if (this.showMessagesBGWorker.CancellationPending)
+                    {
+                        e.Cancel = true;
+                        break;
+                    }
+
+                    /* Report Progress */
+                    this.showMessagesBGWorker.ReportProgress(-1, string.Format("Task Progress: {0}%", (int)(((double)x / (double)messageList.CheckedIndices.Count) * 100)));
+
+                    /* Do Steps */
+                    int index = messageList.CheckedIndices[x];
+                    if (!displayMsgDict.ContainsKey(Convert.ToBase64String((byte[])associationDict[index])))
+                    {
+                        displayMsgDict.Add(Convert.ToBase64String((byte[])associationDict[index]), messageDict[index]);
+                    }
+                }
+            }
+            else
+            {
+                for (int x = 0; x < messageList.Items.Count; x++)
+                {
+                    /* Check Cancellation */
+                    if (this.showMessagesBGWorker.CancellationPending)
+                    {
+                        e.Cancel = true;
+                        break;
+                    }
+
+                    /* Report Progress */
+                    this.showMessagesBGWorker.ReportProgress(-1, string.Format("Task Progress: {0}%", (int)(((double)x / (double)messageList.Items.Count) * 100)));
+
+                    /* Do Steps */
+                    if (!displayMsgDict.ContainsKey(Convert.ToBase64String((byte[])associationDict[x])))
+                    {
+                        displayMsgDict.Add(Convert.ToBase64String((byte[])associationDict[x]), messageDict[x]);
+                    }
+                }
+            }
+
+            /* Post Operations */
+            setDispData(displayMsgDict.Count - 1);
+            setMsgCount();
+        }
+
+        private void OnDoWorkLoadFiles(object sender, DoWorkEventArgs e)
+        {
+            /* Retrieve Arguments */
+            String[] files = (String[])e.Argument;
+
+            RichTextBox tempBox = new RichTextBox();
+
+            if (null != files)
+            {
+                for (Int32 x = 0; x < files.Length; x++)
+                {
+                    /* Check Cancellation */
+                    if (this.loadMessagesBGWorker.CancellationPending)
+                    {
+                        e.Cancel = true;
+                        break;
+                    }
+
+                    /* Report Progress */
+                    this.loadMessagesBGWorker.ReportProgress(-1, string.Format("Task Progress: {0}%", (int)(((double)x / (double)files.Length) * 100)));
+
+                    /* Do Steps */
+                    String[] fileName = files[x].Split('\\');
+                    tempBox.LoadFile(files[x], RichTextBoxStreamType.PlainText);
+                    if (!displayMsgDict.ContainsKey(fileName[fileName.Count() - 1]))
+                    {
+                        displayMsgDict.Add(fileName[fileName.Count() - 1], tempBox.Text.ToString());
+                    }
+                }
+
+                /* Post Operations */
+                setDispData(displayMsgDict.Count - 1);
+                setMsgCount();
+            }
+        }
+    }
+}
