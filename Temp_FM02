@@ -1,0 +1,1949 @@
+namespace MQ
+{
+    partial class Form1
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            this.SCBox = new System.Windows.Forms.GroupBox();
+            this.typeText = new System.Windows.Forms.Label();
+            this.typeColor = new System.Windows.Forms.Label();
+            this.loadKeyStoreLoc = new System.Windows.Forms.Button();
+            this.cipherSpec = new System.Windows.Forms.ComboBox();
+            this.isSSL = new System.Windows.Forms.CheckBox();
+            this.label30 = new System.Windows.Forms.Label();
+            this.label32 = new System.Windows.Forms.Label();
+            this.keyStoreLoc = new System.Windows.Forms.TextBox();
+            this.label23 = new System.Windows.Forms.Label();
+            this.connProp = new System.Windows.Forms.ComboBox();
+            this.label28 = new System.Windows.Forms.Label();
+            this.svrQMgr = new System.Windows.Forms.TextBox();
+            this.connStatus = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.isAuth = new System.Windows.Forms.CheckBox();
+            this.isChannel = new System.Windows.Forms.Label();
+            this.svrChannel = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.svrPort = new System.Windows.Forms.TextBox();
+            this.conc = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
+            this.svrPass = new System.Windows.Forms.TextBox();
+            this.disCon = new System.Windows.Forms.Button();
+            this.label12 = new System.Windows.Forms.Label();
+            this.svrUser = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.svrHost = new System.Windows.Forms.TextBox();
+            this.MQBox = new System.Windows.Forms.GroupBox();
+            this.saveCFile = new System.Windows.Forms.Button();
+            this.loadFile = new System.Windows.Forms.Button();
+            this.clearList = new System.Windows.Forms.Button();
+            this.queueList = new System.Windows.Forms.CheckedListBox();
+            this.remQueue = new System.Windows.Forms.Button();
+            this.addQueue = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.queueName = new System.Windows.Forms.TextBox();
+            this.QDBox = new System.Windows.Forms.GroupBox();
+            this.lblQServInterval = new System.Windows.Forms.TextBox();
+            this.lblQOpenStatus = new System.Windows.Forms.TextBox();
+            this.lblQDef = new System.Windows.Forms.TextBox();
+            this.lblQRetInterval = new System.Windows.Forms.TextBox();
+            this.lblQPriority = new System.Windows.Forms.TextBox();
+            this.lblQType = new System.Windows.Forms.TextBox();
+            this.lblQOpenOutputCount = new System.Windows.Forms.TextBox();
+            this.lblQADate = new System.Windows.Forms.TextBox();
+            this.lblQCDate = new System.Windows.Forms.TextBox();
+            this.lblQOpenInpCount = new System.Windows.Forms.TextBox();
+            this.lblQCR = new System.Windows.Forms.TextBox();
+            this.lblQDesc = new System.Windows.Forms.TextBox();
+            this.lblQMaxMsgLength = new System.Windows.Forms.TextBox();
+            this.lblQName = new System.Windows.Forms.TextBox();
+            this.lblQCDepth = new System.Windows.Forms.TextBox();
+            this.lblQMaxDepth = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.lblQDLow = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.lblQDHigh = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label25 = new System.Windows.Forms.Label();
+            this.label27 = new System.Windows.Forms.Label();
+            this.label29 = new System.Windows.Forms.Label();
+            this.label31 = new System.Windows.Forms.Label();
+            this.label33 = new System.Windows.Forms.Label();
+            this.label24 = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.displayMsg = new System.Windows.Forms.RichTextBox();
+            this.DMsgBox = new System.Windows.Forms.GroupBox();
+            this.btnEncoding = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.btnSaveAll = new System.Windows.Forms.Button();
+            this.btnDelAll = new System.Windows.Forms.Button();
+            this.btnSearchAll = new System.Windows.Forms.Button();
+            this.btnSearch = new System.Windows.Forms.Button();
+            this.btnPaste = new System.Windows.Forms.Button();
+            this.btnCopy = new System.Windows.Forms.Button();
+            this.btnCut = new System.Windows.Forms.Button();
+            this.btnSaveFile = new System.Windows.Forms.Button();
+            this.btnDelFile = new System.Windows.Forms.Button();
+            this.btnAddFile = new System.Windows.Forms.Button();
+            this.dispCount = new System.Windows.Forms.Label();
+            this.dispCounter = new System.Windows.Forms.TextBox();
+            this.label26 = new System.Windows.Forms.Label();
+            this.showFirstMsg = new System.Windows.Forms.Button();
+            this.showPrevMsg = new System.Windows.Forms.Button();
+            this.showNextMsg = new System.Windows.Forms.Button();
+            this.showLastMsg = new System.Windows.Forms.Button();
+            this.btnBrowseFile = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.filePath = new System.Windows.Forms.TextBox();
+            this.QDMBox = new System.Windows.Forms.GroupBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.delSelMsgs = new System.Windows.Forms.Button();
+            this.btnGetAll = new System.Windows.Forms.Button();
+            this.btnGetTop1000 = new System.Windows.Forms.Button();
+            this.btnGetTop750 = new System.Windows.Forms.Button();
+            this.btnGetTop500 = new System.Windows.Forms.Button();
+            this.btnGetTop250 = new System.Windows.Forms.Button();
+            this.btnGetTop150 = new System.Windows.Forms.Button();
+            this.btnGetTop100 = new System.Windows.Forms.Button();
+            this.btnGetTop50 = new System.Windows.Forms.Button();
+            this.btnGetTop25 = new System.Windows.Forms.Button();
+            this.btnGetTop15 = new System.Windows.Forms.Button();
+            this.btnGetTop10 = new System.Windows.Forms.Button();
+            this.clearMsgs = new System.Windows.Forms.Button();
+            this.showSel = new System.Windows.Forms.Button();
+            this.showAll = new System.Windows.Forms.Button();
+            this.messageList = new System.Windows.Forms.CheckedListBox();
+            this.btnGetMessages = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
+            this.selectQueueDM = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.queueListOpenDialog = new System.Windows.Forms.OpenFileDialog();
+            this.PMsgBox = new System.Windows.Forms.GroupBox();
+            this.pushSelected = new System.Windows.Forms.Button();
+            this.pushAll = new System.Windows.Forms.Button();
+            this.label19 = new System.Windows.Forms.Label();
+            this.sendQueue = new System.Windows.Forms.TextBox();
+            this.LogsBox = new System.Windows.Forms.GroupBox();
+            this.clearMsgList = new System.Windows.Forms.RichTextBox();
+            this.kdbStoreOpenDialog = new System.Windows.Forms.OpenFileDialog();
+            this.queueListSaveDialog = new System.Windows.Forms.SaveFileDialog();
+            this.displayFilesOpenDialog = new System.Windows.Forms.OpenFileDialog();
+            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.saveBGWorker = new System.ComponentModel.BackgroundWorker();
+            this.clearQueueBGWorker = new System.ComponentModel.BackgroundWorker();
+            this.getQueueDetailsBGWorker = new System.ComponentModel.BackgroundWorker();
+            this.getQueueMessagesBGWorker = new System.ComponentModel.BackgroundWorker();
+            this.loadMessagesBGWorker = new System.ComponentModel.BackgroundWorker();
+            this.deleteSelectedBGWorker = new System.ComponentModel.BackgroundWorker();
+            this.putMessagesBGWorker = new System.ComponentModel.BackgroundWorker();
+            this.showMessagesBGWorker = new System.ComponentModel.BackgroundWorker();
+            this.SCBox.SuspendLayout();
+            this.MQBox.SuspendLayout();
+            this.QDBox.SuspendLayout();
+            this.DMsgBox.SuspendLayout();
+            this.QDMBox.SuspendLayout();
+            this.PMsgBox.SuspendLayout();
+            this.LogsBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // SCBox
+            // 
+            this.SCBox.Controls.Add(this.typeText);
+            this.SCBox.Controls.Add(this.typeColor);
+            this.SCBox.Controls.Add(this.loadKeyStoreLoc);
+            this.SCBox.Controls.Add(this.cipherSpec);
+            this.SCBox.Controls.Add(this.isSSL);
+            this.SCBox.Controls.Add(this.label30);
+            this.SCBox.Controls.Add(this.label32);
+            this.SCBox.Controls.Add(this.keyStoreLoc);
+            this.SCBox.Controls.Add(this.label23);
+            this.SCBox.Controls.Add(this.connProp);
+            this.SCBox.Controls.Add(this.label28);
+            this.SCBox.Controls.Add(this.svrQMgr);
+            this.SCBox.Controls.Add(this.connStatus);
+            this.SCBox.Controls.Add(this.label15);
+            this.SCBox.Controls.Add(this.isAuth);
+            this.SCBox.Controls.Add(this.isChannel);
+            this.SCBox.Controls.Add(this.svrChannel);
+            this.SCBox.Controls.Add(this.label1);
+            this.SCBox.Controls.Add(this.svrPort);
+            this.SCBox.Controls.Add(this.conc);
+            this.SCBox.Controls.Add(this.label11);
+            this.SCBox.Controls.Add(this.svrPass);
+            this.SCBox.Controls.Add(this.disCon);
+            this.SCBox.Controls.Add(this.label12);
+            this.SCBox.Controls.Add(this.svrUser);
+            this.SCBox.Controls.Add(this.label13);
+            this.SCBox.Controls.Add(this.svrHost);
+            this.SCBox.Location = new System.Drawing.Point(12, 12);
+            this.SCBox.Name = "SCBox";
+            this.SCBox.Size = new System.Drawing.Size(617, 286);
+            this.SCBox.TabIndex = 0;
+            this.SCBox.TabStop = false;
+            this.SCBox.Text = "MQ Server &Connection Details";
+            // 
+            // typeText
+            // 
+            this.typeText.Location = new System.Drawing.Point(530, 142);
+            this.typeText.Name = "typeText";
+            this.typeText.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.typeText.Size = new System.Drawing.Size(65, 13);
+            this.typeText.TabIndex = 26;
+            this.typeText.Text = "IBM";
+            // 
+            // typeColor
+            // 
+            this.typeColor.BackColor = System.Drawing.Color.DodgerBlue;
+            this.typeColor.Location = new System.Drawing.Point(596, 143);
+            this.typeColor.Name = "typeColor";
+            this.typeColor.Size = new System.Drawing.Size(11, 11);
+            this.typeColor.TabIndex = 25;
+            // 
+            // loadKeyStoreLoc
+            // 
+            this.loadKeyStoreLoc.Location = new System.Drawing.Point(283, 168);
+            this.loadKeyStoreLoc.Name = "loadKeyStoreLoc";
+            this.loadKeyStoreLoc.Size = new System.Drawing.Size(35, 26);
+            this.loadKeyStoreLoc.TabIndex = 8;
+            this.loadKeyStoreLoc.Text = "...";
+            this.loadKeyStoreLoc.UseVisualStyleBackColor = true;
+            this.loadKeyStoreLoc.Click += new System.EventHandler(this.loadKeyStoreLoc_Click);
+            // 
+            // cipherSpec
+            // 
+            this.cipherSpec.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cipherSpec.FormattingEnabled = true;
+            this.cipherSpec.Items.AddRange(new object[] {
+            "DES_SHA_EXPORT",
+            "ECDHE_ECDSA_3DES_EDE_CBC_SHA256",
+            "ECDHE_ECDSA_AES_128_CBC_SHA256",
+            "ECDHE_ECDSA_AES_128_GCM_SHA256",
+            "ECDHE_ECDSA_AES_256_CBC_SHA384",
+            "ECDHE_ECDSA_AES_256_GCM_SHA384",
+            "ECDHE_ECDSA_NULL_SHA256",
+            "ECDHE_ECDSA_RC4_128_SHA256",
+            "ECDHE_RSA_3DES_EDE_CBC_SHA256",
+            "ECDHE_RSA_AES_128_CBC_SHA256",
+            "ECDHE_RSA_AES_128_GCM_SHA256",
+            "ECDHE_RSA_AES_256_CBC_SHA384",
+            "ECDHE_RSA_AES_256_GCM_SHA384",
+            "ECDHE_RSA_NULL_SHA256",
+            "ECDHE_RSA_RC4_128_SHA256",
+            "FIPS_WITH_3DES_EDE_CBC_SHA",
+            "FIPS_WITH_DES_CBC_SHA",
+            "NULL_MD5",
+            "NULL_SHA",
+            "RC4_MD5_EXPORT",
+            "RC4_MD5_US",
+            "RC4_SHA_US",
+            "TLS_RSA_WITH_3DES_EDE_CBC_SHA",
+            "TLS_RSA_WITH_AES_128_CBC_SHA",
+            "TLS_RSA_WITH_AES_128_CBC_SHA256",
+            "TLS_RSA_WITH_AES_128_GCM_SHA256",
+            "TLS_RSA_WITH_AES_256_CBC_SHA",
+            "TLS_RSA_WITH_AES_256_CBC_SHA256",
+            "TLS_RSA_WITH_AES_256_GCM_SHA384",
+            "TLS_RSA_WITH_DES_CBC_SHA",
+            "TLS_RSA_WITH_NULL_SHA256",
+            "TLS_RSA_WITH_RC4_128_SHA256",
+            "TRIPLE_DES_SHA_US"});
+            this.cipherSpec.Location = new System.Drawing.Point(327, 171);
+            this.cipherSpec.Name = "cipherSpec";
+            this.cipherSpec.Size = new System.Drawing.Size(279, 21);
+            this.cipherSpec.TabIndex = 9;
+            // 
+            // isSSL
+            // 
+            this.isSSL.AutoSize = true;
+            this.isSSL.Checked = true;
+            this.isSSL.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.isSSL.Location = new System.Drawing.Point(14, 136);
+            this.isSSL.Name = "isSSL";
+            this.isSSL.Size = new System.Drawing.Size(92, 17);
+            this.isSSL.TabIndex = 6;
+            this.isSSL.Text = "SSL Required";
+            this.isSSL.UseVisualStyleBackColor = true;
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(324, 154);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(65, 13);
+            this.label30.TabIndex = 24;
+            this.label30.Text = "CipherSpec:";
+            // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Location = new System.Drawing.Point(11, 154);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(97, 13);
+            this.label32.TabIndex = 23;
+            this.label32.Text = "KeyStore Location:";
+            // 
+            // keyStoreLoc
+            // 
+            this.keyStoreLoc.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.keyStoreLoc.Location = new System.Drawing.Point(14, 171);
+            this.keyStoreLoc.Name = "keyStoreLoc";
+            this.keyStoreLoc.ReadOnly = true;
+            this.keyStoreLoc.Size = new System.Drawing.Size(263, 20);
+            this.keyStoreLoc.TabIndex = 7;
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(11, 14);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(72, 13);
+            this.label23.TabIndex = 19;
+            this.label23.Text = "Configuration:";
+            // 
+            // connProp
+            // 
+            this.connProp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.connProp.FormattingEnabled = true;
+            this.connProp.Items.AddRange(new object[] {
+            "Custom Configuration"});
+            this.connProp.Location = new System.Drawing.Point(15, 30);
+            this.connProp.Name = "connProp";
+            this.connProp.Size = new System.Drawing.Size(592, 21);
+            this.connProp.TabIndex = 1;
+            this.connProp.SelectedIndexChanged += new System.EventHandler(this.connProp_SelectedIndexChanged);
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(471, 95);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(87, 13);
+            this.label28.TabIndex = 18;
+            this.label28.Text = "Queue Manager:";
+            // 
+            // svrQMgr
+            // 
+            this.svrQMgr.Location = new System.Drawing.Point(474, 112);
+            this.svrQMgr.Name = "svrQMgr";
+            this.svrQMgr.Size = new System.Drawing.Size(134, 20);
+            this.svrQMgr.TabIndex = 5;
+            // 
+            // connStatus
+            // 
+            this.connStatus.AutoSize = true;
+            this.connStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.connStatus.ForeColor = System.Drawing.Color.Red;
+            this.connStatus.Location = new System.Drawing.Point(152, 259);
+            this.connStatus.Name = "connStatus";
+            this.connStatus.Size = new System.Drawing.Size(115, 17);
+            this.connStatus.TabIndex = 16;
+            this.connStatus.Text = "Not Connected";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label15.Location = new System.Drawing.Point(12, 259);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(145, 17);
+            this.label15.TabIndex = 15;
+            this.label15.Text = "Connection Status:";
+            // 
+            // isAuth
+            // 
+            this.isAuth.AutoSize = true;
+            this.isAuth.Checked = true;
+            this.isAuth.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.isAuth.Location = new System.Drawing.Point(14, 195);
+            this.isAuth.Name = "isAuth";
+            this.isAuth.Size = new System.Drawing.Size(140, 17);
+            this.isAuth.TabIndex = 10;
+            this.isAuth.Text = "Authentication Required";
+            this.isAuth.UseVisualStyleBackColor = true;
+            this.isAuth.CheckedChanged += new System.EventHandler(this.isAuth_CheckedChanged);
+            // 
+            // isChannel
+            // 
+            this.isChannel.AutoSize = true;
+            this.isChannel.Location = new System.Drawing.Point(11, 95);
+            this.isChannel.Name = "isChannel";
+            this.isChannel.Size = new System.Drawing.Size(80, 13);
+            this.isChannel.TabIndex = 14;
+            this.isChannel.Text = "Channel Name:";
+            // 
+            // svrChannel
+            // 
+            this.svrChannel.Location = new System.Drawing.Point(14, 112);
+            this.svrChannel.Name = "svrChannel";
+            this.svrChannel.Size = new System.Drawing.Size(454, 20);
+            this.svrChannel.TabIndex = 4;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(471, 54);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(69, 13);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "Port Number:";
+            // 
+            // svrPort
+            // 
+            this.svrPort.Location = new System.Drawing.Point(474, 71);
+            this.svrPort.Name = "svrPort";
+            this.svrPort.Size = new System.Drawing.Size(134, 20);
+            this.svrPort.TabIndex = 3;
+            // 
+            // conc
+            // 
+            this.conc.Location = new System.Drawing.Point(450, 254);
+            this.conc.Name = "conc";
+            this.conc.Size = new System.Drawing.Size(75, 26);
+            this.conc.TabIndex = 13;
+            this.conc.Text = "&Connect";
+            this.conc.UseVisualStyleBackColor = true;
+            this.conc.Click += new System.EventHandler(this.conc_Click);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(324, 213);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(56, 13);
+            this.label11.TabIndex = 10;
+            this.label11.Text = "Password:";
+            // 
+            // svrPass
+            // 
+            this.svrPass.Location = new System.Drawing.Point(327, 230);
+            this.svrPass.Name = "svrPass";
+            this.svrPass.PasswordChar = '*';
+            this.svrPass.Size = new System.Drawing.Size(281, 20);
+            this.svrPass.TabIndex = 12;
+            // 
+            // disCon
+            // 
+            this.disCon.Enabled = false;
+            this.disCon.Location = new System.Drawing.Point(531, 254);
+            this.disCon.Name = "disCon";
+            this.disCon.Size = new System.Drawing.Size(75, 26);
+            this.disCon.TabIndex = 14;
+            this.disCon.Text = "&Disconnect";
+            this.disCon.UseVisualStyleBackColor = true;
+            this.disCon.Click += new System.EventHandler(this.disCon_Click);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(11, 213);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(58, 13);
+            this.label12.TabIndex = 8;
+            this.label12.Text = "Username:";
+            // 
+            // svrUser
+            // 
+            this.svrUser.Location = new System.Drawing.Point(14, 230);
+            this.svrUser.Name = "svrUser";
+            this.svrUser.Size = new System.Drawing.Size(304, 20);
+            this.svrUser.TabIndex = 11;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(11, 54);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(58, 13);
+            this.label13.TabIndex = 6;
+            this.label13.Text = "Hostname:";
+            // 
+            // svrHost
+            // 
+            this.svrHost.Location = new System.Drawing.Point(14, 71);
+            this.svrHost.Name = "svrHost";
+            this.svrHost.Size = new System.Drawing.Size(454, 20);
+            this.svrHost.TabIndex = 2;
+            this.svrHost.TextChanged += new System.EventHandler(this.svrHost_TextChanged);
+            this.svrHost.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SelectHostKeyPress);
+            // 
+            // MQBox
+            // 
+            this.MQBox.Controls.Add(this.saveCFile);
+            this.MQBox.Controls.Add(this.loadFile);
+            this.MQBox.Controls.Add(this.clearList);
+            this.MQBox.Controls.Add(this.queueList);
+            this.MQBox.Controls.Add(this.remQueue);
+            this.MQBox.Controls.Add(this.addQueue);
+            this.MQBox.Controls.Add(this.label3);
+            this.MQBox.Controls.Add(this.queueName);
+            this.MQBox.Enabled = false;
+            this.MQBox.Location = new System.Drawing.Point(12, 304);
+            this.MQBox.Name = "MQBox";
+            this.MQBox.Size = new System.Drawing.Size(617, 211);
+            this.MQBox.TabIndex = 15;
+            this.MQBox.TabStop = false;
+            this.MQBox.Text = "&Walk Message Queues";
+            // 
+            // saveCFile
+            // 
+            this.saveCFile.Location = new System.Drawing.Point(507, 177);
+            this.saveCFile.Name = "saveCFile";
+            this.saveCFile.Size = new System.Drawing.Size(100, 26);
+            this.saveCFile.TabIndex = 22;
+            this.saveCFile.Text = "Save File";
+            this.saveCFile.UseVisualStyleBackColor = true;
+            this.saveCFile.Click += new System.EventHandler(this.saveCFile_Click);
+            // 
+            // loadFile
+            // 
+            this.loadFile.Location = new System.Drawing.Point(401, 177);
+            this.loadFile.Name = "loadFile";
+            this.loadFile.Size = new System.Drawing.Size(100, 26);
+            this.loadFile.TabIndex = 21;
+            this.loadFile.Text = "&Load File";
+            this.loadFile.UseVisualStyleBackColor = true;
+            this.loadFile.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // clearList
+            // 
+            this.clearList.Location = new System.Drawing.Point(13, 177);
+            this.clearList.Name = "clearList";
+            this.clearList.Size = new System.Drawing.Size(100, 26);
+            this.clearList.TabIndex = 20;
+            this.clearList.Text = "Clea&r";
+            this.clearList.UseVisualStyleBackColor = true;
+            this.clearList.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // queueList
+            // 
+            this.queueList.FormattingEnabled = true;
+            this.queueList.Location = new System.Drawing.Point(14, 62);
+            this.queueList.Name = "queueList";
+            this.queueList.Size = new System.Drawing.Size(594, 109);
+            this.queueList.TabIndex = 19;
+            this.queueList.DoubleClick += new System.EventHandler(this.QueueDetailsForceRefresh);
+            this.queueList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueListKeyPress);
+            // 
+            // remQueue
+            // 
+            this.remQueue.Location = new System.Drawing.Point(563, 34);
+            this.remQueue.Name = "remQueue";
+            this.remQueue.Size = new System.Drawing.Size(45, 25);
+            this.remQueue.TabIndex = 18;
+            this.remQueue.Text = "-";
+            this.remQueue.UseVisualStyleBackColor = true;
+            this.remQueue.Click += new System.EventHandler(this.remQueue_Click);
+            // 
+            // addQueue
+            // 
+            this.addQueue.Location = new System.Drawing.Point(508, 34);
+            this.addQueue.Name = "addQueue";
+            this.addQueue.Size = new System.Drawing.Size(45, 25);
+            this.addQueue.TabIndex = 17;
+            this.addQueue.Text = "+";
+            this.addQueue.UseVisualStyleBackColor = true;
+            this.addQueue.Click += new System.EventHandler(this.addQueue_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(11, 20);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(73, 13);
+            this.label3.TabIndex = 19;
+            this.label3.Text = "Queue Name:";
+            // 
+            // queueName
+            // 
+            this.queueName.Location = new System.Drawing.Point(14, 37);
+            this.queueName.Name = "queueName";
+            this.queueName.Size = new System.Drawing.Size(487, 20);
+            this.queueName.TabIndex = 16;
+            this.queueName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SelectQueueKeyPress);
+            // 
+            // QDBox
+            // 
+            this.QDBox.Controls.Add(this.lblQServInterval);
+            this.QDBox.Controls.Add(this.lblQOpenStatus);
+            this.QDBox.Controls.Add(this.lblQDef);
+            this.QDBox.Controls.Add(this.lblQRetInterval);
+            this.QDBox.Controls.Add(this.lblQPriority);
+            this.QDBox.Controls.Add(this.lblQType);
+            this.QDBox.Controls.Add(this.lblQOpenOutputCount);
+            this.QDBox.Controls.Add(this.lblQADate);
+            this.QDBox.Controls.Add(this.lblQCDate);
+            this.QDBox.Controls.Add(this.lblQOpenInpCount);
+            this.QDBox.Controls.Add(this.lblQCR);
+            this.QDBox.Controls.Add(this.lblQDesc);
+            this.QDBox.Controls.Add(this.lblQMaxMsgLength);
+            this.QDBox.Controls.Add(this.lblQName);
+            this.QDBox.Controls.Add(this.lblQCDepth);
+            this.QDBox.Controls.Add(this.lblQMaxDepth);
+            this.QDBox.Controls.Add(this.label6);
+            this.QDBox.Controls.Add(this.lblQDLow);
+            this.QDBox.Controls.Add(this.label10);
+            this.QDBox.Controls.Add(this.lblQDHigh);
+            this.QDBox.Controls.Add(this.label17);
+            this.QDBox.Controls.Add(this.label21);
+            this.QDBox.Controls.Add(this.label25);
+            this.QDBox.Controls.Add(this.label27);
+            this.QDBox.Controls.Add(this.label29);
+            this.QDBox.Controls.Add(this.label31);
+            this.QDBox.Controls.Add(this.label33);
+            this.QDBox.Controls.Add(this.label24);
+            this.QDBox.Controls.Add(this.label22);
+            this.QDBox.Controls.Add(this.label20);
+            this.QDBox.Controls.Add(this.label18);
+            this.QDBox.Controls.Add(this.label16);
+            this.QDBox.Controls.Add(this.label14);
+            this.QDBox.Controls.Add(this.label9);
+            this.QDBox.Controls.Add(this.label7);
+            this.QDBox.Controls.Add(this.label4);
+            this.QDBox.Enabled = false;
+            this.QDBox.Location = new System.Drawing.Point(12, 521);
+            this.QDBox.Name = "QDBox";
+            this.QDBox.Size = new System.Drawing.Size(617, 205);
+            this.QDBox.TabIndex = 23;
+            this.QDBox.TabStop = false;
+            this.QDBox.Text = "Q&ueue Details";
+            // 
+            // lblQServInterval
+            // 
+            this.lblQServInterval.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.lblQServInterval.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblQServInterval.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQServInterval.Location = new System.Drawing.Point(552, 180);
+            this.lblQServInterval.Name = "lblQServInterval";
+            this.lblQServInterval.ReadOnly = true;
+            this.lblQServInterval.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.lblQServInterval.Size = new System.Drawing.Size(56, 19);
+            this.lblQServInterval.TabIndex = 41;
+            this.lblQServInterval.Text = "0";
+            this.lblQServInterval.Click += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQServInterval.DoubleClick += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQServInterval.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueDetailsRefresh);
+            // 
+            // lblQOpenStatus
+            // 
+            this.lblQOpenStatus.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.lblQOpenStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblQOpenStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQOpenStatus.Location = new System.Drawing.Point(157, 180);
+            this.lblQOpenStatus.Name = "lblQOpenStatus";
+            this.lblQOpenStatus.ReadOnly = true;
+            this.lblQOpenStatus.Size = new System.Drawing.Size(251, 19);
+            this.lblQOpenStatus.TabIndex = 32;
+            this.lblQOpenStatus.Text = "---";
+            this.lblQOpenStatus.Click += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQOpenStatus.DoubleClick += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQOpenStatus.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueDetailsRefresh);
+            // 
+            // lblQDef
+            // 
+            this.lblQDef.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.lblQDef.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblQDef.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQDef.Location = new System.Drawing.Point(157, 160);
+            this.lblQDef.Name = "lblQDef";
+            this.lblQDef.ReadOnly = true;
+            this.lblQDef.Size = new System.Drawing.Size(251, 19);
+            this.lblQDef.TabIndex = 31;
+            this.lblQDef.Text = "---";
+            this.lblQDef.Click += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQDef.DoubleClick += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQDef.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueDetailsRefresh);
+            // 
+            // lblQRetInterval
+            // 
+            this.lblQRetInterval.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.lblQRetInterval.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblQRetInterval.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQRetInterval.Location = new System.Drawing.Point(552, 160);
+            this.lblQRetInterval.Name = "lblQRetInterval";
+            this.lblQRetInterval.ReadOnly = true;
+            this.lblQRetInterval.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.lblQRetInterval.Size = new System.Drawing.Size(56, 19);
+            this.lblQRetInterval.TabIndex = 40;
+            this.lblQRetInterval.Text = "0";
+            this.lblQRetInterval.Click += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQRetInterval.DoubleClick += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQRetInterval.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueDetailsRefresh);
+            // 
+            // lblQPriority
+            // 
+            this.lblQPriority.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.lblQPriority.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblQPriority.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQPriority.Location = new System.Drawing.Point(157, 140);
+            this.lblQPriority.Name = "lblQPriority";
+            this.lblQPriority.ReadOnly = true;
+            this.lblQPriority.Size = new System.Drawing.Size(251, 19);
+            this.lblQPriority.TabIndex = 30;
+            this.lblQPriority.Text = "---";
+            this.lblQPriority.Click += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQPriority.DoubleClick += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQPriority.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueDetailsRefresh);
+            // 
+            // lblQType
+            // 
+            this.lblQType.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.lblQType.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblQType.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQType.Location = new System.Drawing.Point(157, 119);
+            this.lblQType.Name = "lblQType";
+            this.lblQType.ReadOnly = true;
+            this.lblQType.Size = new System.Drawing.Size(251, 19);
+            this.lblQType.TabIndex = 29;
+            this.lblQType.Text = "---";
+            this.lblQType.Click += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQType.DoubleClick += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQType.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueDetailsRefresh);
+            // 
+            // lblQOpenOutputCount
+            // 
+            this.lblQOpenOutputCount.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.lblQOpenOutputCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblQOpenOutputCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQOpenOutputCount.Location = new System.Drawing.Point(552, 140);
+            this.lblQOpenOutputCount.Name = "lblQOpenOutputCount";
+            this.lblQOpenOutputCount.ReadOnly = true;
+            this.lblQOpenOutputCount.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.lblQOpenOutputCount.Size = new System.Drawing.Size(56, 19);
+            this.lblQOpenOutputCount.TabIndex = 39;
+            this.lblQOpenOutputCount.Text = "0";
+            this.lblQOpenOutputCount.Click += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQOpenOutputCount.DoubleClick += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQOpenOutputCount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueDetailsRefresh);
+            // 
+            // lblQADate
+            // 
+            this.lblQADate.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.lblQADate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblQADate.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQADate.Location = new System.Drawing.Point(157, 99);
+            this.lblQADate.Name = "lblQADate";
+            this.lblQADate.ReadOnly = true;
+            this.lblQADate.Size = new System.Drawing.Size(251, 19);
+            this.lblQADate.TabIndex = 28;
+            this.lblQADate.Text = "---";
+            this.lblQADate.Click += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQADate.DoubleClick += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQADate.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueDetailsRefresh);
+            // 
+            // lblQCDate
+            // 
+            this.lblQCDate.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.lblQCDate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblQCDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQCDate.Location = new System.Drawing.Point(157, 79);
+            this.lblQCDate.Name = "lblQCDate";
+            this.lblQCDate.ReadOnly = true;
+            this.lblQCDate.Size = new System.Drawing.Size(251, 19);
+            this.lblQCDate.TabIndex = 27;
+            this.lblQCDate.Text = "---";
+            this.lblQCDate.Click += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQCDate.DoubleClick += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQCDate.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueDetailsRefresh);
+            // 
+            // lblQOpenInpCount
+            // 
+            this.lblQOpenInpCount.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.lblQOpenInpCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblQOpenInpCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQOpenInpCount.Location = new System.Drawing.Point(552, 119);
+            this.lblQOpenInpCount.Name = "lblQOpenInpCount";
+            this.lblQOpenInpCount.ReadOnly = true;
+            this.lblQOpenInpCount.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.lblQOpenInpCount.Size = new System.Drawing.Size(56, 19);
+            this.lblQOpenInpCount.TabIndex = 38;
+            this.lblQOpenInpCount.Text = "0";
+            this.lblQOpenInpCount.Click += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQOpenInpCount.DoubleClick += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQOpenInpCount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueDetailsRefresh);
+            // 
+            // lblQCR
+            // 
+            this.lblQCR.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.lblQCR.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblQCR.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQCR.Location = new System.Drawing.Point(157, 59);
+            this.lblQCR.Name = "lblQCR";
+            this.lblQCR.ReadOnly = true;
+            this.lblQCR.Size = new System.Drawing.Size(251, 19);
+            this.lblQCR.TabIndex = 26;
+            this.lblQCR.Text = "---";
+            this.lblQCR.Click += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQCR.DoubleClick += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQCR.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueDetailsRefresh);
+            // 
+            // lblQDesc
+            // 
+            this.lblQDesc.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.lblQDesc.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblQDesc.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQDesc.Location = new System.Drawing.Point(157, 38);
+            this.lblQDesc.Name = "lblQDesc";
+            this.lblQDesc.ReadOnly = true;
+            this.lblQDesc.Size = new System.Drawing.Size(251, 19);
+            this.lblQDesc.TabIndex = 25;
+            this.lblQDesc.Text = "---";
+            this.lblQDesc.Click += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQDesc.DoubleClick += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQDesc.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueDetailsRefresh);
+            // 
+            // lblQMaxMsgLength
+            // 
+            this.lblQMaxMsgLength.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.lblQMaxMsgLength.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblQMaxMsgLength.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQMaxMsgLength.Location = new System.Drawing.Point(552, 99);
+            this.lblQMaxMsgLength.Name = "lblQMaxMsgLength";
+            this.lblQMaxMsgLength.ReadOnly = true;
+            this.lblQMaxMsgLength.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.lblQMaxMsgLength.Size = new System.Drawing.Size(56, 19);
+            this.lblQMaxMsgLength.TabIndex = 37;
+            this.lblQMaxMsgLength.Text = "0";
+            this.lblQMaxMsgLength.Click += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQMaxMsgLength.DoubleClick += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQMaxMsgLength.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueDetailsRefresh);
+            // 
+            // lblQName
+            // 
+            this.lblQName.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.lblQName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblQName.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQName.Location = new System.Drawing.Point(157, 18);
+            this.lblQName.Name = "lblQName";
+            this.lblQName.ReadOnly = true;
+            this.lblQName.Size = new System.Drawing.Size(251, 19);
+            this.lblQName.TabIndex = 24;
+            this.lblQName.Text = "---";
+            this.lblQName.Click += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQName.DoubleClick += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueDetailsRefresh);
+            // 
+            // lblQCDepth
+            // 
+            this.lblQCDepth.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.lblQCDepth.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblQCDepth.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQCDepth.Location = new System.Drawing.Point(552, 18);
+            this.lblQCDepth.Name = "lblQCDepth";
+            this.lblQCDepth.ReadOnly = true;
+            this.lblQCDepth.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.lblQCDepth.Size = new System.Drawing.Size(56, 19);
+            this.lblQCDepth.TabIndex = 33;
+            this.lblQCDepth.Text = "0";
+            this.lblQCDepth.DoubleClick += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQCDepth.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueDetailsRefresh);
+            // 
+            // lblQMaxDepth
+            // 
+            this.lblQMaxDepth.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.lblQMaxDepth.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblQMaxDepth.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQMaxDepth.Location = new System.Drawing.Point(552, 79);
+            this.lblQMaxDepth.Name = "lblQMaxDepth";
+            this.lblQMaxDepth.ReadOnly = true;
+            this.lblQMaxDepth.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.lblQMaxDepth.Size = new System.Drawing.Size(56, 19);
+            this.lblQMaxDepth.TabIndex = 36;
+            this.lblQMaxDepth.Text = "0";
+            this.lblQMaxDepth.Click += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQMaxDepth.DoubleClick += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQMaxDepth.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueDetailsRefresh);
+            // 
+            // label6
+            // 
+            this.label6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(413, 182);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(133, 15);
+            this.label6.TabIndex = 53;
+            this.label6.Text = "Service Interval:";
+            // 
+            // lblQDLow
+            // 
+            this.lblQDLow.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.lblQDLow.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblQDLow.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQDLow.Location = new System.Drawing.Point(552, 38);
+            this.lblQDLow.Name = "lblQDLow";
+            this.lblQDLow.ReadOnly = true;
+            this.lblQDLow.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.lblQDLow.Size = new System.Drawing.Size(56, 19);
+            this.lblQDLow.TabIndex = 34;
+            this.lblQDLow.Text = "0";
+            this.lblQDLow.Click += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQDLow.DoubleClick += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQDLow.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueDetailsRefresh);
+            // 
+            // label10
+            // 
+            this.label10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(413, 40);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(133, 15);
+            this.label10.TabIndex = 51;
+            this.label10.Text = "Depth (Low):";
+            // 
+            // lblQDHigh
+            // 
+            this.lblQDHigh.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.lblQDHigh.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblQDHigh.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQDHigh.Location = new System.Drawing.Point(552, 59);
+            this.lblQDHigh.Name = "lblQDHigh";
+            this.lblQDHigh.ReadOnly = true;
+            this.lblQDHigh.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.lblQDHigh.Size = new System.Drawing.Size(56, 19);
+            this.lblQDHigh.TabIndex = 35;
+            this.lblQDHigh.Text = "0";
+            this.lblQDHigh.Click += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQDHigh.DoubleClick += new System.EventHandler(this.QueueDetailsRefresh);
+            this.lblQDHigh.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.QueueDetailsRefresh);
+            // 
+            // label17
+            // 
+            this.label17.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.Location = new System.Drawing.Point(413, 162);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(133, 15);
+            this.label17.TabIndex = 49;
+            this.label17.Text = "Retention Interval:";
+            // 
+            // label21
+            // 
+            this.label21.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label21.Location = new System.Drawing.Point(413, 142);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(133, 15);
+            this.label21.TabIndex = 47;
+            this.label21.Text = "Open Writers Count:";
+            // 
+            // label25
+            // 
+            this.label25.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label25.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label25.Location = new System.Drawing.Point(413, 121);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(133, 15);
+            this.label25.TabIndex = 45;
+            this.label25.Text = "Open Readers Count:";
+            // 
+            // label27
+            // 
+            this.label27.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label27.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label27.Location = new System.Drawing.Point(413, 101);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(133, 15);
+            this.label27.TabIndex = 43;
+            this.label27.Text = "Max Message Length:";
+            // 
+            // label29
+            // 
+            this.label29.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label29.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label29.Location = new System.Drawing.Point(413, 81);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(133, 15);
+            this.label29.TabIndex = 41;
+            this.label29.Text = "Maximum Depth:";
+            // 
+            // label31
+            // 
+            this.label31.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label31.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label31.Location = new System.Drawing.Point(413, 61);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(133, 15);
+            this.label31.TabIndex = 39;
+            this.label31.Text = "Depth (High):";
+            // 
+            // label33
+            // 
+            this.label33.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label33.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label33.Location = new System.Drawing.Point(413, 20);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(133, 15);
+            this.label33.TabIndex = 37;
+            this.label33.Text = "Current Depth:";
+            // 
+            // label24
+            // 
+            this.label24.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label24.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label24.Location = new System.Drawing.Point(11, 182);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(140, 15);
+            this.label24.TabIndex = 35;
+            this.label24.Text = "Open Status:";
+            // 
+            // label22
+            // 
+            this.label22.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label22.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label22.Location = new System.Drawing.Point(11, 40);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(140, 15);
+            this.label22.TabIndex = 33;
+            this.label22.Text = "Description:";
+            // 
+            // label20
+            // 
+            this.label20.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label20.Location = new System.Drawing.Point(11, 162);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(140, 15);
+            this.label20.TabIndex = 31;
+            this.label20.Text = "Definition Type:";
+            // 
+            // label18
+            // 
+            this.label18.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label18.Location = new System.Drawing.Point(11, 142);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(140, 15);
+            this.label18.TabIndex = 29;
+            this.label18.Text = "Default Priority:";
+            // 
+            // label16
+            // 
+            this.label16.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label16.Location = new System.Drawing.Point(11, 121);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(140, 15);
+            this.label16.TabIndex = 27;
+            this.label16.Text = "Queue Type:";
+            // 
+            // label14
+            // 
+            this.label14.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(11, 101);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(140, 15);
+            this.label14.TabIndex = 25;
+            this.label14.Text = "Alteration Date:";
+            // 
+            // label9
+            // 
+            this.label9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(11, 81);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(140, 15);
+            this.label9.TabIndex = 23;
+            this.label9.Text = "Creation Date:";
+            // 
+            // label7
+            // 
+            this.label7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(11, 61);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(140, 15);
+            this.label7.TabIndex = 21;
+            this.label7.Text = "Connection Reference:";
+            // 
+            // label4
+            // 
+            this.label4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(11, 20);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(140, 15);
+            this.label4.TabIndex = 19;
+            this.label4.Text = "Queue Name:";
+            // 
+            // displayMsg
+            // 
+            this.displayMsg.Location = new System.Drawing.Point(14, 112);
+            this.displayMsg.Name = "displayMsg";
+            this.displayMsg.Size = new System.Drawing.Size(600, 520);
+            this.displayMsg.TabIndex = 90;
+            this.displayMsg.Text = "";
+            this.displayMsg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.displayMsg_MouseDown);
+            this.displayMsg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.displayMsg_MouseUp);
+            // 
+            // DMsgBox
+            // 
+            this.DMsgBox.Controls.Add(this.btnEncoding);
+            this.DMsgBox.Controls.Add(this.btnClear);
+            this.DMsgBox.Controls.Add(this.btnSaveAll);
+            this.DMsgBox.Controls.Add(this.btnDelAll);
+            this.DMsgBox.Controls.Add(this.btnSearchAll);
+            this.DMsgBox.Controls.Add(this.btnSearch);
+            this.DMsgBox.Controls.Add(this.btnPaste);
+            this.DMsgBox.Controls.Add(this.btnCopy);
+            this.DMsgBox.Controls.Add(this.btnCut);
+            this.DMsgBox.Controls.Add(this.btnSaveFile);
+            this.DMsgBox.Controls.Add(this.btnDelFile);
+            this.DMsgBox.Controls.Add(this.btnAddFile);
+            this.DMsgBox.Controls.Add(this.dispCount);
+            this.DMsgBox.Controls.Add(this.dispCounter);
+            this.DMsgBox.Controls.Add(this.label26);
+            this.DMsgBox.Controls.Add(this.showFirstMsg);
+            this.DMsgBox.Controls.Add(this.showPrevMsg);
+            this.DMsgBox.Controls.Add(this.showNextMsg);
+            this.DMsgBox.Controls.Add(this.showLastMsg);
+            this.DMsgBox.Controls.Add(this.displayMsg);
+            this.DMsgBox.Controls.Add(this.btnBrowseFile);
+            this.DMsgBox.Controls.Add(this.label5);
+            this.DMsgBox.Controls.Add(this.filePath);
+            this.DMsgBox.Enabled = false;
+            this.DMsgBox.Location = new System.Drawing.Point(641, 12);
+            this.DMsgBox.Name = "DMsgBox";
+            this.DMsgBox.Size = new System.Drawing.Size(625, 679);
+            this.DMsgBox.TabIndex = 62;
+            this.DMsgBox.TabStop = false;
+            this.DMsgBox.Text = "Display &Message ViewPort";
+            // 
+            // btnEncoding
+            // 
+            this.btnEncoding.Image = ((System.Drawing.Image)(resources.GetObject("btnEncoding.Image")));
+            this.btnEncoding.Location = new System.Drawing.Point(572, 63);
+            this.btnEncoding.Name = "btnEncoding";
+            this.btnEncoding.Size = new System.Drawing.Size(42, 42);
+            this.btnEncoding.TabIndex = 89;
+            this.btnEncoding.UseVisualStyleBackColor = true;
+            this.btnEncoding.Click += new System.EventHandler(this.btnEncoding_Click);
+            // 
+            // btnClear
+            // 
+            this.btnClear.Image = ((System.Drawing.Image)(resources.GetObject("btnClear.Image")));
+            this.btnClear.Location = new System.Drawing.Point(522, 63);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(42, 42);
+            this.btnClear.TabIndex = 88;
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
+            // btnSaveAll
+            // 
+            this.btnSaveAll.Image = ((System.Drawing.Image)(resources.GetObject("btnSaveAll.Image")));
+            this.btnSaveAll.Location = new System.Drawing.Point(467, 63);
+            this.btnSaveAll.Name = "btnSaveAll";
+            this.btnSaveAll.Size = new System.Drawing.Size(42, 42);
+            this.btnSaveAll.TabIndex = 87;
+            this.btnSaveAll.UseVisualStyleBackColor = true;
+            this.btnSaveAll.Click += new System.EventHandler(this.btnSaveAll_Click);
+            // 
+            // btnDelAll
+            // 
+            this.btnDelAll.Image = ((System.Drawing.Image)(resources.GetObject("btnDelAll.Image")));
+            this.btnDelAll.Location = new System.Drawing.Point(419, 63);
+            this.btnDelAll.Name = "btnDelAll";
+            this.btnDelAll.Size = new System.Drawing.Size(42, 42);
+            this.btnDelAll.TabIndex = 86;
+            this.btnDelAll.UseVisualStyleBackColor = true;
+            this.btnDelAll.Click += new System.EventHandler(this.btnDelAll_Click);
+            // 
+            // btnSearchAll
+            // 
+            this.btnSearchAll.Image = ((System.Drawing.Image)(resources.GetObject("btnSearchAll.Image")));
+            this.btnSearchAll.Location = new System.Drawing.Point(364, 63);
+            this.btnSearchAll.Name = "btnSearchAll";
+            this.btnSearchAll.Size = new System.Drawing.Size(42, 42);
+            this.btnSearchAll.TabIndex = 85;
+            this.btnSearchAll.UseVisualStyleBackColor = true;
+            this.btnSearchAll.Click += new System.EventHandler(this.btnSearchAll_Click);
+            // 
+            // btnSearch
+            // 
+            this.btnSearch.Image = ((System.Drawing.Image)(resources.GetObject("btnSearch.Image")));
+            this.btnSearch.Location = new System.Drawing.Point(316, 63);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(42, 42);
+            this.btnSearch.TabIndex = 84;
+            this.btnSearch.UseVisualStyleBackColor = true;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            // 
+            // btnPaste
+            // 
+            this.btnPaste.Image = ((System.Drawing.Image)(resources.GetObject("btnPaste.Image")));
+            this.btnPaste.Location = new System.Drawing.Point(261, 63);
+            this.btnPaste.Name = "btnPaste";
+            this.btnPaste.Size = new System.Drawing.Size(42, 42);
+            this.btnPaste.TabIndex = 83;
+            this.btnPaste.UseVisualStyleBackColor = true;
+            this.btnPaste.Click += new System.EventHandler(this.btnPaste_Click);
+            // 
+            // btnCopy
+            // 
+            this.btnCopy.Image = ((System.Drawing.Image)(resources.GetObject("btnCopy.Image")));
+            this.btnCopy.Location = new System.Drawing.Point(213, 63);
+            this.btnCopy.Name = "btnCopy";
+            this.btnCopy.Size = new System.Drawing.Size(42, 42);
+            this.btnCopy.TabIndex = 82;
+            this.btnCopy.UseVisualStyleBackColor = true;
+            this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
+            // 
+            // btnCut
+            // 
+            this.btnCut.Image = ((System.Drawing.Image)(resources.GetObject("btnCut.Image")));
+            this.btnCut.Location = new System.Drawing.Point(165, 63);
+            this.btnCut.Name = "btnCut";
+            this.btnCut.Size = new System.Drawing.Size(42, 42);
+            this.btnCut.TabIndex = 81;
+            this.btnCut.UseVisualStyleBackColor = true;
+            this.btnCut.Click += new System.EventHandler(this.btnCut_Click);
+            // 
+            // btnSaveFile
+            // 
+            this.btnSaveFile.Image = ((System.Drawing.Image)(resources.GetObject("btnSaveFile.Image")));
+            this.btnSaveFile.Location = new System.Drawing.Point(110, 63);
+            this.btnSaveFile.Name = "btnSaveFile";
+            this.btnSaveFile.Size = new System.Drawing.Size(42, 42);
+            this.btnSaveFile.TabIndex = 80;
+            this.btnSaveFile.UseVisualStyleBackColor = true;
+            this.btnSaveFile.Click += new System.EventHandler(this.btnSaveFile_Click);
+            // 
+            // btnDelFile
+            // 
+            this.btnDelFile.Image = ((System.Drawing.Image)(resources.GetObject("btnDelFile.Image")));
+            this.btnDelFile.Location = new System.Drawing.Point(62, 63);
+            this.btnDelFile.Name = "btnDelFile";
+            this.btnDelFile.Size = new System.Drawing.Size(42, 42);
+            this.btnDelFile.TabIndex = 79;
+            this.btnDelFile.UseVisualStyleBackColor = true;
+            this.btnDelFile.Click += new System.EventHandler(this.btnDelFile_Click);
+            // 
+            // btnAddFile
+            // 
+            this.btnAddFile.Image = ((System.Drawing.Image)(resources.GetObject("btnAddFile.Image")));
+            this.btnAddFile.Location = new System.Drawing.Point(14, 63);
+            this.btnAddFile.Name = "btnAddFile";
+            this.btnAddFile.Size = new System.Drawing.Size(42, 42);
+            this.btnAddFile.TabIndex = 78;
+            this.btnAddFile.UseVisualStyleBackColor = true;
+            this.btnAddFile.Click += new System.EventHandler(this.btnAddFile_Click);
+            // 
+            // dispCount
+            // 
+            this.dispCount.AutoSize = true;
+            this.dispCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dispCount.ForeColor = System.Drawing.Color.Black;
+            this.dispCount.Location = new System.Drawing.Point(92, 645);
+            this.dispCount.Name = "dispCount";
+            this.dispCount.Size = new System.Drawing.Size(17, 17);
+            this.dispCount.TabIndex = 28;
+            this.dispCount.Text = "0";
+            // 
+            // dispCounter
+            // 
+            this.dispCounter.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.dispCounter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.dispCounter.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dispCounter.Location = new System.Drawing.Point(453, 645);
+            this.dispCounter.Name = "dispCounter";
+            this.dispCounter.ReadOnly = true;
+            this.dispCounter.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.dispCounter.Size = new System.Drawing.Size(56, 19);
+            this.dispCounter.TabIndex = 112;
+            this.dispCounter.Text = "0";
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label26.Location = new System.Drawing.Point(11, 645);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(86, 17);
+            this.label26.TabIndex = 27;
+            this.label26.Text = "List Count:";
+            // 
+            // showFirstMsg
+            // 
+            this.showFirstMsg.Location = new System.Drawing.Point(350, 642);
+            this.showFirstMsg.Name = "showFirstMsg";
+            this.showFirstMsg.Size = new System.Drawing.Size(45, 25);
+            this.showFirstMsg.TabIndex = 110;
+            this.showFirstMsg.Text = "<<";
+            this.showFirstMsg.UseVisualStyleBackColor = true;
+            this.showFirstMsg.Click += new System.EventHandler(this.button4_Click_1);
+            // 
+            // showPrevMsg
+            // 
+            this.showPrevMsg.Location = new System.Drawing.Point(401, 642);
+            this.showPrevMsg.Name = "showPrevMsg";
+            this.showPrevMsg.Size = new System.Drawing.Size(45, 25);
+            this.showPrevMsg.TabIndex = 111;
+            this.showPrevMsg.Text = "<";
+            this.showPrevMsg.UseVisualStyleBackColor = true;
+            this.showPrevMsg.Click += new System.EventHandler(this.button3_Click_1);
+            // 
+            // showNextMsg
+            // 
+            this.showNextMsg.Location = new System.Drawing.Point(518, 642);
+            this.showNextMsg.Name = "showNextMsg";
+            this.showNextMsg.Size = new System.Drawing.Size(45, 25);
+            this.showNextMsg.TabIndex = 113;
+            this.showNextMsg.Text = ">";
+            this.showNextMsg.UseVisualStyleBackColor = true;
+            this.showNextMsg.Click += new System.EventHandler(this.button2_Click_1);
+            // 
+            // showLastMsg
+            // 
+            this.showLastMsg.Location = new System.Drawing.Point(569, 642);
+            this.showLastMsg.Name = "showLastMsg";
+            this.showLastMsg.Size = new System.Drawing.Size(45, 25);
+            this.showLastMsg.TabIndex = 114;
+            this.showLastMsg.Text = ">>";
+            this.showLastMsg.UseVisualStyleBackColor = true;
+            this.showLastMsg.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // btnBrowseFile
+            // 
+            this.btnBrowseFile.Location = new System.Drawing.Point(569, 34);
+            this.btnBrowseFile.Name = "btnBrowseFile";
+            this.btnBrowseFile.Size = new System.Drawing.Size(45, 25);
+            this.btnBrowseFile.TabIndex = 75;
+            this.btnBrowseFile.Text = "...";
+            this.btnBrowseFile.UseVisualStyleBackColor = true;
+            this.btnBrowseFile.Click += new System.EventHandler(this.rmDispMsg_Click);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(11, 20);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(51, 13);
+            this.label5.TabIndex = 19;
+            this.label5.Text = "File Path:";
+            // 
+            // filePath
+            // 
+            this.filePath.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.filePath.Location = new System.Drawing.Point(14, 37);
+            this.filePath.Name = "filePath";
+            this.filePath.ReadOnly = true;
+            this.filePath.Size = new System.Drawing.Size(548, 20);
+            this.filePath.TabIndex = 65;
+            // 
+            // QDMBox
+            // 
+            this.QDMBox.Controls.Add(this.button2);
+            this.QDMBox.Controls.Add(this.delSelMsgs);
+            this.QDMBox.Controls.Add(this.btnGetAll);
+            this.QDMBox.Controls.Add(this.btnGetTop1000);
+            this.QDMBox.Controls.Add(this.btnGetTop750);
+            this.QDMBox.Controls.Add(this.btnGetTop500);
+            this.QDMBox.Controls.Add(this.btnGetTop250);
+            this.QDMBox.Controls.Add(this.btnGetTop150);
+            this.QDMBox.Controls.Add(this.btnGetTop100);
+            this.QDMBox.Controls.Add(this.btnGetTop50);
+            this.QDMBox.Controls.Add(this.btnGetTop25);
+            this.QDMBox.Controls.Add(this.btnGetTop15);
+            this.QDMBox.Controls.Add(this.btnGetTop10);
+            this.QDMBox.Controls.Add(this.clearMsgs);
+            this.QDMBox.Controls.Add(this.showSel);
+            this.QDMBox.Controls.Add(this.showAll);
+            this.QDMBox.Controls.Add(this.messageList);
+            this.QDMBox.Controls.Add(this.btnGetMessages);
+            this.QDMBox.Controls.Add(this.label8);
+            this.QDMBox.Controls.Add(this.selectQueueDM);
+            this.QDMBox.Enabled = false;
+            this.QDMBox.Location = new System.Drawing.Point(12, 732);
+            this.QDMBox.Name = "QDMBox";
+            this.QDMBox.Size = new System.Drawing.Size(617, 240);
+            this.QDMBox.TabIndex = 42;
+            this.QDMBox.TabStop = false;
+            this.QDMBox.Text = "D&isplay Message(s)";
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(225, 206);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(100, 26);
+            this.button2.TabIndex = 59;
+            this.button2.Text = "Clear L&ist";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click_3);
+            // 
+            // delSelMsgs
+            // 
+            this.delSelMsgs.Location = new System.Drawing.Point(119, 206);
+            this.delSelMsgs.Name = "delSelMsgs";
+            this.delSelMsgs.Size = new System.Drawing.Size(100, 26);
+            this.delSelMsgs.TabIndex = 58;
+            this.delSelMsgs.Text = "D&elete Selected";
+            this.delSelMsgs.UseVisualStyleBackColor = true;
+            this.delSelMsgs.Click += new System.EventHandler(this.delSelMsgs_Click);
+            // 
+            // btnGetAll
+            // 
+            this.btnGetAll.Location = new System.Drawing.Point(562, 63);
+            this.btnGetAll.Name = "btnGetAll";
+            this.btnGetAll.Size = new System.Drawing.Size(45, 25);
+            this.btnGetAll.TabIndex = 55;
+            this.btnGetAll.Text = ">>";
+            this.btnGetAll.UseVisualStyleBackColor = true;
+            this.btnGetAll.Click += new System.EventHandler(this.btnGetAll_Click);
+            // 
+            // btnGetTop1000
+            // 
+            this.btnGetTop1000.Location = new System.Drawing.Point(506, 63);
+            this.btnGetTop1000.Name = "btnGetTop1000";
+            this.btnGetTop1000.Size = new System.Drawing.Size(45, 25);
+            this.btnGetTop1000.TabIndex = 54;
+            this.btnGetTop1000.Text = "1000";
+            this.btnGetTop1000.UseVisualStyleBackColor = true;
+            this.btnGetTop1000.Click += new System.EventHandler(this.btnGetTop1000_Click);
+            // 
+            // btnGetTop750
+            // 
+            this.btnGetTop750.Location = new System.Drawing.Point(450, 63);
+            this.btnGetTop750.Name = "btnGetTop750";
+            this.btnGetTop750.Size = new System.Drawing.Size(45, 25);
+            this.btnGetTop750.TabIndex = 53;
+            this.btnGetTop750.Text = "750";
+            this.btnGetTop750.UseVisualStyleBackColor = true;
+            this.btnGetTop750.Click += new System.EventHandler(this.btnGetTop750_Click);
+            // 
+            // btnGetTop500
+            // 
+            this.btnGetTop500.Location = new System.Drawing.Point(394, 63);
+            this.btnGetTop500.Name = "btnGetTop500";
+            this.btnGetTop500.Size = new System.Drawing.Size(45, 25);
+            this.btnGetTop500.TabIndex = 52;
+            this.btnGetTop500.Text = "500";
+            this.btnGetTop500.UseVisualStyleBackColor = true;
+            this.btnGetTop500.Click += new System.EventHandler(this.btnGetTop500_Click);
+            // 
+            // btnGetTop250
+            // 
+            this.btnGetTop250.Location = new System.Drawing.Point(338, 63);
+            this.btnGetTop250.Name = "btnGetTop250";
+            this.btnGetTop250.Size = new System.Drawing.Size(45, 25);
+            this.btnGetTop250.TabIndex = 51;
+            this.btnGetTop250.Text = "250";
+            this.btnGetTop250.UseVisualStyleBackColor = true;
+            this.btnGetTop250.Click += new System.EventHandler(this.btnGetTop250_Click);
+            // 
+            // btnGetTop150
+            // 
+            this.btnGetTop150.Location = new System.Drawing.Point(283, 63);
+            this.btnGetTop150.Name = "btnGetTop150";
+            this.btnGetTop150.Size = new System.Drawing.Size(45, 25);
+            this.btnGetTop150.TabIndex = 50;
+            this.btnGetTop150.Text = "150";
+            this.btnGetTop150.UseVisualStyleBackColor = true;
+            this.btnGetTop150.Click += new System.EventHandler(this.btnGetTop150_Click);
+            // 
+            // btnGetTop100
+            // 
+            this.btnGetTop100.Location = new System.Drawing.Point(229, 63);
+            this.btnGetTop100.Name = "btnGetTop100";
+            this.btnGetTop100.Size = new System.Drawing.Size(45, 25);
+            this.btnGetTop100.TabIndex = 49;
+            this.btnGetTop100.Text = "100";
+            this.btnGetTop100.UseVisualStyleBackColor = true;
+            this.btnGetTop100.Click += new System.EventHandler(this.btnGetTop100_Click);
+            // 
+            // btnGetTop50
+            // 
+            this.btnGetTop50.Location = new System.Drawing.Point(176, 63);
+            this.btnGetTop50.Name = "btnGetTop50";
+            this.btnGetTop50.Size = new System.Drawing.Size(45, 25);
+            this.btnGetTop50.TabIndex = 48;
+            this.btnGetTop50.Text = "50";
+            this.btnGetTop50.UseVisualStyleBackColor = true;
+            this.btnGetTop50.Click += new System.EventHandler(this.btnGetTop50_Click);
+            // 
+            // btnGetTop25
+            // 
+            this.btnGetTop25.Location = new System.Drawing.Point(122, 63);
+            this.btnGetTop25.Name = "btnGetTop25";
+            this.btnGetTop25.Size = new System.Drawing.Size(45, 25);
+            this.btnGetTop25.TabIndex = 47;
+            this.btnGetTop25.Text = "25";
+            this.btnGetTop25.UseVisualStyleBackColor = true;
+            this.btnGetTop25.Click += new System.EventHandler(this.btnGetTop25_Click);
+            // 
+            // btnGetTop15
+            // 
+            this.btnGetTop15.Location = new System.Drawing.Point(69, 63);
+            this.btnGetTop15.Name = "btnGetTop15";
+            this.btnGetTop15.Size = new System.Drawing.Size(45, 25);
+            this.btnGetTop15.TabIndex = 46;
+            this.btnGetTop15.Text = "15";
+            this.btnGetTop15.UseVisualStyleBackColor = true;
+            this.btnGetTop15.Click += new System.EventHandler(this.btnGetTop15_Click);
+            // 
+            // btnGetTop10
+            // 
+            this.btnGetTop10.Location = new System.Drawing.Point(14, 63);
+            this.btnGetTop10.Name = "btnGetTop10";
+            this.btnGetTop10.Size = new System.Drawing.Size(45, 25);
+            this.btnGetTop10.TabIndex = 45;
+            this.btnGetTop10.Text = "10";
+            this.btnGetTop10.UseVisualStyleBackColor = true;
+            this.btnGetTop10.Click += new System.EventHandler(this.btnGetTop10_Click);
+            // 
+            // clearMsgs
+            // 
+            this.clearMsgs.Location = new System.Drawing.Point(13, 206);
+            this.clearMsgs.Name = "clearMsgs";
+            this.clearMsgs.Size = new System.Drawing.Size(100, 26);
+            this.clearMsgs.TabIndex = 57;
+            this.clearMsgs.Text = "Clear &Queue";
+            this.clearMsgs.UseVisualStyleBackColor = true;
+            this.clearMsgs.Click += new System.EventHandler(this.clearMsgs_Click);
+            // 
+            // showSel
+            // 
+            this.showSel.Location = new System.Drawing.Point(401, 206);
+            this.showSel.Name = "showSel";
+            this.showSel.Size = new System.Drawing.Size(100, 26);
+            this.showSel.TabIndex = 60;
+            this.showSel.Text = "Show &Selected";
+            this.showSel.UseVisualStyleBackColor = true;
+            this.showSel.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // showAll
+            // 
+            this.showAll.Location = new System.Drawing.Point(508, 206);
+            this.showAll.Name = "showAll";
+            this.showAll.Size = new System.Drawing.Size(100, 26);
+            this.showAll.TabIndex = 61;
+            this.showAll.Text = "Sh&ow All";
+            this.showAll.UseVisualStyleBackColor = true;
+            this.showAll.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // messageList
+            // 
+            this.messageList.FormattingEnabled = true;
+            this.messageList.Location = new System.Drawing.Point(13, 93);
+            this.messageList.Name = "messageList";
+            this.messageList.Size = new System.Drawing.Size(594, 109);
+            this.messageList.TabIndex = 56;
+            this.messageList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.MessageListKeyPress);
+            // 
+            // btnGetMessages
+            // 
+            this.btnGetMessages.Location = new System.Drawing.Point(562, 35);
+            this.btnGetMessages.Name = "btnGetMessages";
+            this.btnGetMessages.Size = new System.Drawing.Size(45, 25);
+            this.btnGetMessages.TabIndex = 44;
+            this.btnGetMessages.Text = ">";
+            this.btnGetMessages.UseVisualStyleBackColor = true;
+            this.btnGetMessages.Click += new System.EventHandler(this.btnGetMessages_Click);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(11, 20);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(75, 13);
+            this.label8.TabIndex = 19;
+            this.label8.Text = "Select Queue:";
+            // 
+            // selectQueueDM
+            // 
+            this.selectQueueDM.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.selectQueueDM.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.selectQueueDM.Location = new System.Drawing.Point(14, 37);
+            this.selectQueueDM.Name = "selectQueueDM";
+            this.selectQueueDM.Size = new System.Drawing.Size(543, 20);
+            this.selectQueueDM.TabIndex = 43;
+            this.selectQueueDM.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SelectMessasgeKeyPress);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(12, 979);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(170, 26);
+            this.button1.TabIndex = 70;
+            this.button1.Text = "getSelectedMsgContent";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click_2);
+            // 
+            // queueListOpenDialog
+            // 
+            this.queueListOpenDialog.DefaultExt = "mqm";
+            this.queueListOpenDialog.FileName = "MQMQueueListFile";
+            this.queueListOpenDialog.Filter = "All File(s)|*.*";
+            this.queueListOpenDialog.Title = "Open Message Queue Configuration File...";
+            // 
+            // PMsgBox
+            // 
+            this.PMsgBox.Controls.Add(this.pushSelected);
+            this.PMsgBox.Controls.Add(this.pushAll);
+            this.PMsgBox.Controls.Add(this.label19);
+            this.PMsgBox.Controls.Add(this.sendQueue);
+            this.PMsgBox.Enabled = false;
+            this.PMsgBox.Location = new System.Drawing.Point(640, 697);
+            this.PMsgBox.Name = "PMsgBox";
+            this.PMsgBox.Size = new System.Drawing.Size(625, 73);
+            this.PMsgBox.TabIndex = 115;
+            this.PMsgBox.TabStop = false;
+            this.PMsgBox.Text = "&Put Message(s)";
+            // 
+            // pushSelected
+            // 
+            this.pushSelected.Location = new System.Drawing.Point(518, 35);
+            this.pushSelected.Name = "pushSelected";
+            this.pushSelected.Size = new System.Drawing.Size(45, 25);
+            this.pushSelected.TabIndex = 117;
+            this.pushSelected.Text = ">";
+            this.pushSelected.UseVisualStyleBackColor = true;
+            this.pushSelected.Click += new System.EventHandler(this.button3_Click_2);
+            // 
+            // pushAll
+            // 
+            this.pushAll.Location = new System.Drawing.Point(569, 35);
+            this.pushAll.Name = "pushAll";
+            this.pushAll.Size = new System.Drawing.Size(45, 25);
+            this.pushAll.TabIndex = 118;
+            this.pushAll.Text = ">>";
+            this.pushAll.UseVisualStyleBackColor = true;
+            this.pushAll.Click += new System.EventHandler(this.button6_Click_1);
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(11, 20);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(75, 13);
+            this.label19.TabIndex = 19;
+            this.label19.Text = "Select Queue:";
+            // 
+            // sendQueue
+            // 
+            this.sendQueue.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.sendQueue.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.sendQueue.Location = new System.Drawing.Point(14, 37);
+            this.sendQueue.Name = "sendQueue";
+            this.sendQueue.Size = new System.Drawing.Size(495, 20);
+            this.sendQueue.TabIndex = 116;
+            // 
+            // LogsBox
+            // 
+            this.LogsBox.Controls.Add(this.clearMsgList);
+            this.LogsBox.Location = new System.Drawing.Point(640, 776);
+            this.LogsBox.Name = "LogsBox";
+            this.LogsBox.Size = new System.Drawing.Size(625, 197);
+            this.LogsBox.TabIndex = 119;
+            this.LogsBox.TabStop = false;
+            this.LogsBox.Text = "Lo&gs";
+            // 
+            // clearMsgList
+            // 
+            this.clearMsgList.Location = new System.Drawing.Point(11, 19);
+            this.clearMsgList.Name = "clearMsgList";
+            this.clearMsgList.ReadOnly = true;
+            this.clearMsgList.Size = new System.Drawing.Size(603, 170);
+            this.clearMsgList.TabIndex = 120;
+            this.clearMsgList.Text = "";
+            // 
+            // kdbStoreOpenDialog
+            // 
+            this.kdbStoreOpenDialog.DefaultExt = "kdb";
+            this.kdbStoreOpenDialog.FileName = "keyc15_OneReg";
+            this.kdbStoreOpenDialog.Filter = "Key Store File|*.kdb";
+            this.kdbStoreOpenDialog.Title = "Open KeyStore Configuration File...";
+            // 
+            // queueListSaveDialog
+            // 
+            this.queueListSaveDialog.DefaultExt = "mqm";
+            this.queueListSaveDialog.FileName = "MQMQueueListFile";
+            this.queueListSaveDialog.Filter = "All File(s)|*.*";
+            this.queueListSaveDialog.Title = "Save Message Queue Configuration File...";
+            // 
+            // displayFilesOpenDialog
+            // 
+            this.displayFilesOpenDialog.DefaultExt = "txt";
+            this.displayFilesOpenDialog.Filter = "All File(s)|*.*";
+            this.displayFilesOpenDialog.Multiselect = true;
+            this.displayFilesOpenDialog.Title = "Open File...";
+            // 
+            // saveBGWorker
+            // 
+            this.saveBGWorker.WorkerReportsProgress = true;
+            this.saveBGWorker.WorkerSupportsCancellation = true;
+            this.saveBGWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.OnDoSave);
+            this.saveBGWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.OnProgressChanged);
+            this.saveBGWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.OnRunWorkerCompleted);
+            // 
+            // clearQueueBGWorker
+            // 
+            this.clearQueueBGWorker.WorkerReportsProgress = true;
+            this.clearQueueBGWorker.WorkerSupportsCancellation = true;
+            this.clearQueueBGWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.OnDoClearQueue);
+            this.clearQueueBGWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.OnProgressChanged);
+            this.clearQueueBGWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.OnRunWorkerCompleted);
+            // 
+            // getQueueDetailsBGWorker
+            // 
+            this.getQueueDetailsBGWorker.WorkerReportsProgress = true;
+            this.getQueueDetailsBGWorker.WorkerSupportsCancellation = true;
+            this.getQueueDetailsBGWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.OnDoGetQueueData);
+            this.getQueueDetailsBGWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.OnProgressChanged);
+            this.getQueueDetailsBGWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.OnRunWorkerCompleted);
+            // 
+            // getQueueMessagesBGWorker
+            // 
+            this.getQueueMessagesBGWorker.WorkerReportsProgress = true;
+            this.getQueueMessagesBGWorker.WorkerSupportsCancellation = true;
+            this.getQueueMessagesBGWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.OnDoGetMessages);
+            this.getQueueMessagesBGWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.OnProgressChanged);
+            this.getQueueMessagesBGWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.OnRunWorkerCompleted);
+            // 
+            // loadMessagesBGWorker
+            // 
+            this.loadMessagesBGWorker.WorkerReportsProgress = true;
+            this.loadMessagesBGWorker.WorkerSupportsCancellation = true;
+            this.loadMessagesBGWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.OnDoWorkLoadFiles);
+            this.loadMessagesBGWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.OnProgressChanged);
+            this.loadMessagesBGWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.OnRunWorkerCompleted);
+            // 
+            // deleteSelectedBGWorker
+            // 
+            this.deleteSelectedBGWorker.WorkerReportsProgress = true;
+            this.deleteSelectedBGWorker.WorkerSupportsCancellation = true;
+            this.deleteSelectedBGWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.OnDoWorkDeleteSelected);
+            this.deleteSelectedBGWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.OnProgressChanged);
+            this.deleteSelectedBGWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.OnRunWorkerCompleted);
+            // 
+            // putMessagesBGWorker
+            // 
+            this.putMessagesBGWorker.WorkerReportsProgress = true;
+            this.putMessagesBGWorker.WorkerSupportsCancellation = true;
+            this.putMessagesBGWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.OnDoWorkPutMessages);
+            this.putMessagesBGWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.OnProgressChanged);
+            this.putMessagesBGWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.OnRunWorkerCompleted);
+            // 
+            // showMessagesBGWorker
+            // 
+            this.showMessagesBGWorker.WorkerReportsProgress = true;
+            this.showMessagesBGWorker.WorkerSupportsCancellation = true;
+            this.showMessagesBGWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.OnDoWorkShowMessages);
+            this.showMessagesBGWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.OnProgressChanged);
+            this.showMessagesBGWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.OnRunWorkerCompleted);
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.ClientSize = new System.Drawing.Size(1274, 998);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.LogsBox);
+            this.Controls.Add(this.PMsgBox);
+            this.Controls.Add(this.QDMBox);
+            this.Controls.Add(this.DMsgBox);
+            this.Controls.Add(this.MQBox);
+            this.Controls.Add(this.SCBox);
+            this.Controls.Add(this.QDBox);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "MQManager - Not Connected";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.SCBox.ResumeLayout(false);
+            this.SCBox.PerformLayout();
+            this.MQBox.ResumeLayout(false);
+            this.MQBox.PerformLayout();
+            this.QDBox.ResumeLayout(false);
+            this.QDBox.PerformLayout();
+            this.DMsgBox.ResumeLayout(false);
+            this.DMsgBox.PerformLayout();
+            this.QDMBox.ResumeLayout(false);
+            this.QDMBox.PerformLayout();
+            this.PMsgBox.ResumeLayout(false);
+            this.PMsgBox.PerformLayout();
+            this.LogsBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.GroupBox SCBox;
+        private System.Windows.Forms.Button conc;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox svrPass;
+        private System.Windows.Forms.Button disCon;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox svrUser;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox svrHost;
+        private System.Windows.Forms.CheckBox isAuth;
+        private System.Windows.Forms.Label isChannel;
+        private System.Windows.Forms.TextBox svrChannel;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox svrPort;
+        private System.Windows.Forms.GroupBox MQBox;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox queueName;
+        private System.Windows.Forms.Button remQueue;
+        private System.Windows.Forms.Button addQueue;
+        private System.Windows.Forms.CheckedListBox queueList;
+        private System.Windows.Forms.Button loadFile;
+        private System.Windows.Forms.Button clearList;
+        private System.Windows.Forms.GroupBox QDBox;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.TextBox lblQName;
+        private System.Windows.Forms.TextBox lblQOpenStatus;
+        private System.Windows.Forms.TextBox lblQDef;
+        private System.Windows.Forms.TextBox lblQPriority;
+        private System.Windows.Forms.TextBox lblQType;
+        private System.Windows.Forms.TextBox lblQADate;
+        private System.Windows.Forms.TextBox lblQCDate;
+        private System.Windows.Forms.TextBox lblQCR;
+        private System.Windows.Forms.TextBox lblQDesc;
+        private System.Windows.Forms.TextBox lblQServInterval;
+        private System.Windows.Forms.TextBox lblQRetInterval;
+        private System.Windows.Forms.TextBox lblQOpenOutputCount;
+        private System.Windows.Forms.TextBox lblQOpenInpCount;
+        private System.Windows.Forms.TextBox lblQMaxMsgLength;
+        private System.Windows.Forms.TextBox lblQMaxDepth;
+        private System.Windows.Forms.TextBox lblQDHigh;
+        private System.Windows.Forms.TextBox lblQDLow;
+        private System.Windows.Forms.TextBox lblQCDepth;
+        private System.Windows.Forms.RichTextBox displayMsg;
+        private System.Windows.Forms.GroupBox DMsgBox;
+        private System.Windows.Forms.Button btnBrowseFile;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox filePath;
+        private System.Windows.Forms.GroupBox QDMBox;
+        private System.Windows.Forms.Button showAll;
+        private System.Windows.Forms.CheckedListBox messageList;
+        private System.Windows.Forms.Button btnGetMessages;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox selectQueueDM;
+        private System.Windows.Forms.Label connStatus;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.OpenFileDialog queueListOpenDialog;
+        private System.Windows.Forms.Button showLastMsg;
+        private System.Windows.Forms.Button showFirstMsg;
+        private System.Windows.Forms.Button showPrevMsg;
+        private System.Windows.Forms.Button showNextMsg;
+        private System.Windows.Forms.Button showSel;
+        private System.Windows.Forms.Button clearMsgs;
+        private System.Windows.Forms.TextBox dispCounter;
+        private System.Windows.Forms.Label dispCount;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.GroupBox PMsgBox;
+        private System.Windows.Forms.Button pushAll;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.TextBox sendQueue;
+        private System.Windows.Forms.Button pushSelected;
+        private System.Windows.Forms.GroupBox LogsBox;
+        private System.Windows.Forms.RichTextBox clearMsgList;
+        private System.Windows.Forms.Button btnGetAll;
+        private System.Windows.Forms.Button btnGetTop1000;
+        private System.Windows.Forms.Button btnGetTop750;
+        private System.Windows.Forms.Button btnGetTop500;
+        private System.Windows.Forms.Button btnGetTop250;
+        private System.Windows.Forms.Button btnGetTop150;
+        private System.Windows.Forms.Button btnGetTop100;
+        private System.Windows.Forms.Button btnGetTop50;
+        private System.Windows.Forms.Button btnGetTop25;
+        private System.Windows.Forms.Button btnGetTop15;
+        private System.Windows.Forms.Button btnGetTop10;
+        private System.Windows.Forms.Button delSelMsgs;
+        private System.Windows.Forms.Label label28;
+        private System.Windows.Forms.TextBox svrQMgr;
+        private System.Windows.Forms.ComboBox connProp;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.CheckBox isSSL;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.Label label32;
+        private System.Windows.Forms.TextBox keyStoreLoc;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.ComboBox cipherSpec;
+        private System.Windows.Forms.Button saveCFile;
+        private System.Windows.Forms.Button loadKeyStoreLoc;
+        private System.Windows.Forms.OpenFileDialog kdbStoreOpenDialog;
+        private System.Windows.Forms.SaveFileDialog queueListSaveDialog;
+        private System.Windows.Forms.Label typeText;
+        private System.Windows.Forms.Label typeColor;
+        private System.Windows.Forms.Button btnAddFile;
+        private System.Windows.Forms.Button btnEncoding;
+        private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.Button btnSaveAll;
+        private System.Windows.Forms.Button btnDelAll;
+        private System.Windows.Forms.Button btnSearchAll;
+        private System.Windows.Forms.Button btnSearch;
+        private System.Windows.Forms.Button btnPaste;
+        private System.Windows.Forms.Button btnCopy;
+        private System.Windows.Forms.Button btnCut;
+        private System.Windows.Forms.Button btnSaveFile;
+        private System.Windows.Forms.Button btnDelFile;
+        private System.Windows.Forms.BindingSource bindingSource1;
+        private System.Windows.Forms.OpenFileDialog displayFilesOpenDialog;
+        private System.ComponentModel.BackgroundWorker saveBGWorker;
+        private System.ComponentModel.BackgroundWorker clearQueueBGWorker;
+        private System.ComponentModel.BackgroundWorker getQueueDetailsBGWorker;
+        private System.ComponentModel.BackgroundWorker getQueueMessagesBGWorker;
+        private System.ComponentModel.BackgroundWorker loadMessagesBGWorker;
+        private System.ComponentModel.BackgroundWorker deleteSelectedBGWorker;
+        private System.ComponentModel.BackgroundWorker putMessagesBGWorker;
+        private System.ComponentModel.BackgroundWorker showMessagesBGWorker;
+    }
+}
