@@ -1,0 +1,62 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace MQ
+{
+    public partial class FindReplace : Form
+    {
+        public FindReplace()
+        {
+            InitializeComponent();
+            this.TopMost = true;
+        }
+
+        private void btnReplace_Click(object sender, EventArgs e)
+        {
+            Program.mainProgram.searchReplaceDisplayMsg(repSearchText.Text, repReplaceText.Text, isRepMatch.Checked, isRepWWord.Checked, isRepRev.Checked, true);
+            if (Program.mainProgram.searchAllFiles)
+                this.Close();
+        }
+
+        private void btnFind_Click(object sender, EventArgs e)
+        {
+            Program.mainProgram.searchReplaceDisplayMsg(searchText.Text, null, isMatchCase.Checked, isWholeWord.Checked, isReverse.Checked, false);
+            if (Program.mainProgram.searchAllFiles)
+                this.Close();
+        }
+
+        private void SearchText(object sender, KeyPressEventArgs e)
+        {
+            if (Convert.ToInt32(e.KeyChar) == 13)
+            {
+                btnFind_Click(sender, e);
+                e.Handled = true;
+            }
+        }
+
+        private void ReplaceText(object sender, KeyPressEventArgs e)
+        {
+            if (Convert.ToInt32(e.KeyChar) == 13)
+            {
+                btnReplace_Click(sender, e);
+                e.Handled = true;
+            }
+        }
+
+        private void FindReplace_Load(object sender, EventArgs e)
+        {
+            searchText.Focus();
+        }
+
+        private void searchText_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
