@@ -1,0 +1,100 @@
+namespace MQ
+{
+    partial class ProgressTracker
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProgressTracker));
+            this.progressBar = new System.Windows.Forms.PictureBox();
+            this.labelProgress = new System.Windows.Forms.Label();
+            this.groupBox = new System.Windows.Forms.GroupBox();
+            ((System.ComponentModel.ISupportInitialize)(this.progressBar)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // progressBar
+            // 
+            this.progressBar.BackColor = System.Drawing.Color.Transparent;
+            this.progressBar.Image = ((System.Drawing.Image)(resources.GetObject("progressBar.Image")));
+            this.progressBar.InitialImage = ((System.Drawing.Image)(resources.GetObject("progressBar.InitialImage")));
+            this.progressBar.Location = new System.Drawing.Point(30, 33);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(66, 66);
+            this.progressBar.TabIndex = 122;
+            this.progressBar.TabStop = false;
+            // 
+            // labelProgress
+            // 
+            this.labelProgress.AutoSize = true;
+            this.labelProgress.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelProgress.Location = new System.Drawing.Point(104, 53);
+            this.labelProgress.Name = "labelProgress";
+            this.labelProgress.Size = new System.Drawing.Size(260, 25);
+            this.labelProgress.TabIndex = 123;
+            this.labelProgress.Text = "Task Progress: Working...";
+            // 
+            // groupBox
+            // 
+            this.groupBox.BackColor = System.Drawing.Color.White;
+            this.groupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.groupBox.Location = new System.Drawing.Point(4, -1);
+            this.groupBox.Name = "groupBox";
+            this.groupBox.Size = new System.Drawing.Size(376, 127);
+            this.groupBox.TabIndex = 124;
+            this.groupBox.TabStop = false;
+            // 
+            // ProgressTracker
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(384, 129);
+            this.ControlBox = false;
+            this.Controls.Add(this.labelProgress);
+            this.Controls.Add(this.progressBar);
+            this.Controls.Add(this.groupBox);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "ProgressTracker";
+            this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Working...";
+            this.TopMost = true;
+            this.Load += new System.EventHandler(this.ProgressTracker_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.progressBar)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.PictureBox progressBar;
+        private System.Windows.Forms.Label labelProgress;
+        private System.Windows.Forms.GroupBox groupBox;
+    }
+}
